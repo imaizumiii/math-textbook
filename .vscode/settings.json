@@ -1,0 +1,22 @@
+{
+  // LaTeXテンプレートファイル（Jinja2構文を含む）のリンター警告を無効化
+  "latex-workshop.linting.chktex.enabled": false,
+  "latex-workshop.linting.lacheck.enabled": false,
+  
+  // 特定のファイルパターンでリンターを無効化
+  "files.associations": {
+    "templates/*.tex": "jinja-latex"
+  },
+  
+  // Jinja2テンプレートファイルの警告を抑制
+  "[jinja-latex]": {
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false
+  },
+  
+  // LaTeXファイルのリンターチェックを緩和
+  "[latex]": {
+    "editor.semanticHighlighting.enabled": false
+  }
+}
+

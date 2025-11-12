@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["directories", "compilation", "file_management"],
+  "properties": {
+    "directories": {
+      "type": "object",
+      "required": ["template_dir", "output_dir"],
+      "properties": {
+        "template_dir": {"type": "string", "minLength": 1},
+        "output_dir": {"type": "string", "minLength": 1},
+        "temp_dir": {"type": "string"}
+      }
+    },
+    "compilation": {
+      "type": "object",
+      "required": ["engine", "compile_times"],
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": ["pdflatex", "xelatex", "lualatex"]
+        },
+        "compile_times": {"type": "integer", "minimum": 1, "maximum": 5},
+        "interaction_mode": {
+          "type": "string",
+          "enum": ["nonstopmode", "batchmode", "scrollmode", "errorstopmode"]
+        },
+        "extra_options": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "file_management": {
+      "type": "object",
+      "required": ["cleanup"],
+      "properties": {
+        "cleanup": {"type": "boolean"},
+        "keep_tex": {"type": "boolean"},
+        "keep_log": {"type": "boolean"},
+        "cleanup_extensions": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^\\.[a-zA-Z0-9.]+$"}
+        }
+      }
+    },
+    "encoding": {
+      "type": "object",
+      "properties": {
+        "template_encoding": {"type": "string"},
+        "output_encoding": {"type": "string"},
+        "latex_output_encoding": {"type": "string"},
+        "fallback_encodings": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "level": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        },
+        "log_file": {"type": "string"},
+        "log_format": {"type": "string"},
+        "console_output": {"type": "boolean"}
+      }
+    },
+    "templates": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "object",
+          "required": ["file", "required_variables"],
+          "properties": {
+            "file": {"type": "string", "minLength": 1},
+            "description": {"type": "string"},
+            "required_variables": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "optional_variables": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "default_variables": {"type": "object"}
+          }
+        }
+      }
+    },
+    "latex_packages": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "template_specific": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_]+$": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "batch": {
+      "type": "object",
+      "properties": {
+        "parallel_compilation": {"type": "boolean"},
+        "max_workers": {"type": "integer", "minimum": 1},
+        "retry_on_failure": {"type": "boolean"},
+        "max_retries": {"type": "integer", "minimum": 0},
+        "retry_delay": {"type": "number", "minimum": 0}
+      }
+    }
+  }
+}
+

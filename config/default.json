@@ -1,0 +1,73 @@
+{
+  "directories": {
+    "template_dir": "templates",
+    "output_dir": "output",
+    "temp_dir": "temp",
+    "fonts_dir": "fonts"
+  },
+  "compilation": {
+    "engine": "pdflatex",
+    "compile_times": 2,
+    "interaction_mode": "nonstopmode",
+    "extra_options": []
+  },
+  "file_management": {
+    "cleanup": true,
+    "keep_tex": false,
+    "keep_log": false,
+    "cleanup_extensions": [".aux", ".log", ".out", ".synctex.gz"]
+  },
+  "encoding": {
+    "template_encoding": "utf-8",
+    "output_encoding": "utf-8",
+    "latex_output_encoding": "utf-8",
+    "fallback_encodings": ["cp932", "shift_jis"]
+  },
+  "logging": {
+    "enabled": true,
+    "level": "INFO",
+    "log_file": "pdf_generator.log",
+    "log_format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "console_output": true
+  },
+  "templates": {
+    "report": {
+      "file": "report.tex",
+      "description": "標準レポート用テンプレート",
+      "required_variables": ["title", "author"],
+      "optional_variables": ["date", "abstract"],
+      "default_variables": {}
+    },
+    "exercise": {
+      "file": "exercise.tex",
+      "description": "練習問題用テンプレート",
+      "required_variables": ["problems"],
+      "optional_variables": [],
+      "default_variables": {
+        "show_answers": true,
+        "problem_format": "numbered"
+      }
+    }
+  },
+  "latex_packages": {
+    "default": [
+      "amsmath",
+      "amsfonts",
+      "amssymb",
+      "[utf8]{inputenc}",
+      "[T1]{fontenc}"
+    ],
+    "template_specific": {
+      "report": ["graphicx", "hyperref"],
+      "exercise": ["enumitem", "multicol"]
+    }
+  },
+  "batch": {
+    "parallel_compilation": false,
+    "max_workers": 4,
+    "retry_on_failure": true,
+    "max_retries": 3,
+    "retry_delay": 1.0
+  }
+}
+

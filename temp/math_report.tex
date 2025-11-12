@@ -1,0 +1,70 @@
+\documentclass[a4paper]{article}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% フォント設定
+\setCJKmainfont{Noto Sans JP}[Path=fonts/, UprightFont=NotoSansJP-Regular.ttf]
+
+\usepackage[top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+
+\begin{document}
+\begin{center}
+{\Large\bfseries 数学レポート }\\[1em]
+あなたの名前 \\[0.5em]
+2024年1月1日
+\end{center}
+\vspace{2em}
+
+\begin{abstract}
+このレポートでは、PythonとLaTeXの連携について説明します。
+\end{abstract}
+
+\section{はじめに}
+
+このレポートでは、以下の内容について説明します。
+\begin{enumerate}
+    \item PythonによるLaTeX生成
+    \item 図の挿入方法
+    \item テキストボックスの使用方法
+\end{enumerate}
+
+
+\section{計算結果}
+
+Pythonで計算された円周率を数式として表示します。
+\[
+    \pi \approx \mathbf{3.141593}
+\]
+
+\section{補足説明}
+
+\begin{tcolorbox}[colback=yellow!5!white, colframe=yellow!75!black, title={注意}]
+この結果は実験的に確認されました。
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title={警告}]
+数値は近似値です。
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title={情報}]
+詳細は参考文献を参照してください。
+\end{tcolorbox}
+
+
+\section{いろいろ使ってみる}
+
+\begin{align*}
+    a &= b + c \\
+    &= y^2 + 1 \\
+    &= mc^2
+\end{align*}
+
+テキスト内に数式を書いています。$y = ax + b$
+
+\end{document}
