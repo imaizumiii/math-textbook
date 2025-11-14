@@ -168,6 +168,26 @@ class DocumentBuilder:
         self.document.add(Text(text))
         return self
     
+    def add_abstract(self, text: str, bold: bool = True, centered: bool = True):
+        """
+        アブストラクト（概要）を追加
+        
+        Args:
+            text: 表示するテキスト
+            bold: 太字にするかどうか（デフォルト: True）
+            centered: 中央寄せにするかどうか（デフォルト: True）
+        
+        Note:
+            呼び出した位置（Document/Sectionの要素列）にそのまま挿入されます。
+        """
+        formatted_text = text
+        if bold:
+            formatted_text = f"\\textbf{{{formatted_text}}}"
+        if centered:
+            formatted_text = f"\\begin{{center}}\n{formatted_text}\n\\end{{center}}"
+        self.document.add(Paragraph(formatted_text))
+        return self
+    
     def add_paragraph(self, text: str):
         """段落を追加"""
         self.document.add(Paragraph(text))
@@ -292,6 +312,18 @@ class SectionBuilder:
         """テーブルを追加"""
         table = Table(headers, rows, caption=caption, label=label)
         self.section.add(table)
+        return self
+
+    def add_abstract(self, text: str, bold: bool = True, centered: bool = True):
+        """
+        セクション内に概要を追加
+        """
+        formatted_text = text
+        if bold:
+            formatted_text = f"\\textbf{{{formatted_text}}}"
+        if centered:
+            formatted_text = f"\\begin{{center}}\n{formatted_text}\n\\end{{center}}"
+        self.section.add(Paragraph(formatted_text))
         return self
     
     def end_section(self) -> DocumentBuilder:

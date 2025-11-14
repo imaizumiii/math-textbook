@@ -75,6 +75,7 @@ def main():
         
         .add_textbox("これはテキストボックスです。")
         
+        .add_abstract("このレポートでは、PythonとLaTeXの連携について説明します。")
         .build())
     
     # PDFを生成
