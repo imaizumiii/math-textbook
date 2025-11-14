@@ -40,7 +40,7 @@ def main():
         # )
         
         .set_margins(top="2cm", bottom="2cm", left="2cm", right="2cm")  # 余白を設定
-        
+        .add_paragraph("texttextttttttあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ")
         # セクション1: はじめに
         .add_section("はじめに")
             .add_text("このレポートでは、以下の内容について説明します。")
@@ -73,12 +73,14 @@ def main():
             .add_text("テキスト内に数式を書いています。$y = ax + b$")
             .end_section()
         
+        .add_textbox("これはテキストボックスです。")
+        
         .build())
     
     # PDFを生成
     print("PDFを生成しています...")
     try:
-        pdf_path = generator.generate(doc, output_name="math_report.pdf")
+        pdf_path = generator.generate(doc, output_name="template.pdf")
         print(f"成功: PDFが生成されました: {pdf_path}")
         return 0
     except FileNotFoundError as e:

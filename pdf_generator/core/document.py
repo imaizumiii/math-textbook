@@ -45,11 +45,6 @@ class Document:
         self.content.append(element)
         return self
     
-    def set_abstract(self, abstract: str):
-        """アブストラクトを設定"""
-        self.abstract = abstract
-        return self
-    
     def to_latex(self) -> str:
         """LaTeXコードに変換"""
         return self.renderer.render_document(self)

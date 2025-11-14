@@ -31,8 +31,10 @@ class LaTeXRenderer:
             # フォント設定を反映（デフォルト: min=明朝体, goth=ゴシック体）
             latex.append(f"\\begin{{CJK}}{{UTF8}}{{{document.font}}}\n")
         
-        # タイトル
-        latex.append(self._render_title(document))
+        # タイトル（現在は自動出力しない）
+        title_block = self._render_title(document)
+        if title_block:
+            latex.append(title_block)
         
         # アブストラクト
         if document.abstract:
@@ -53,14 +55,10 @@ class LaTeXRenderer:
         return "".join(latex)
     
     def _render_title(self, document: 'Document') -> str:
-        result = "\\begin{center}\n"
-        result += f"{{\\Large\\bfseries {document.title} }}\\\\[1em]\n"
-        result += f"{document.author} \\\\[0.5em]\n"
-        if document.date:
-            result += f"{document.date}\n"
-        else:
-            result += "\\today\n"
-        result += "\\end{center}\n"
-        result += "\\vspace{2em}\n\n"
-        return result
+        """
+        タイトルセクションを生成
+        
+        仕様変更: タイトル/名前/日付の自動出力を行わないため、空文字を返す。
+        """
+        return ""
 

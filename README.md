@@ -95,7 +95,6 @@ generator = PDFGenerator()
 
 # DocumentBuilderでドキュメントを構築
 doc = (DocumentBuilder("タイトル", "著者名", "2024年1月1日")
-    .set_abstract("アブストラクト")
     
     # セクションを追加
     .add_section("はじめに")
@@ -118,7 +117,6 @@ from pdf_generator import PDFGenerator, DocumentBuilder
 generator = PDFGenerator()
 
 doc = (DocumentBuilder("数学レポート", "あなたの名前", "2024年1月1日")
-    .set_abstract("このレポートでは、PythonとLaTeXの連携について説明します。")
     
     # セクション1: はじめに
     .add_section("はじめに")
@@ -204,7 +202,6 @@ python examples/builder_example.py
 
 ### DocumentBuilderのメソッド
 
-- `.set_abstract(text)` - アブストラクトを設定
 - `.set_font(font)` - フォントを設定（CJKutf8用: "min"=明朝体, "goth"=ゴシック体）
 - `.set_font_file(font_file, font_name=None)` - フォントファイルを設定（XeLaTeX/LuaLaTeX用）
 - `.set_font_from_url(url, font_name=None, fonts_dir=None)` - URLからフォントファイルをダウンロードして設定

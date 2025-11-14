@@ -19,11 +19,6 @@ class DocumentBuilder:
         self.document = Document(title, author, date)
         self.current_section: Optional[Section] = None
     
-    def set_abstract(self, abstract: str):
-        """アブストラクトを設定"""
-        self.document.set_abstract(abstract)
-        return self
-    
     def set_font(self, font: str):
         """
         フォントを設定（CJKutf8用）
