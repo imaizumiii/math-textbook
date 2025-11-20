@@ -1,0 +1,59 @@
+\documentclass[a4paper]{article}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+
+% フォント設定
+\setCJKmainfont{Noto Sans JP}[Path=fonts/, UprightFont=NotoSansJP-Regular.ttf, BoldFont=NotoSansJP-Bold.ttf]
+
+\usepackage[top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.5}
+
+\begin{document}
+\section{【無限大も特別な値の候補の１つ】}
+
+\begin{tcolorbox}[title={例題}]
+どのような実数$x$に対しても、不等式\\\[|x^3 + ax^2 + bx + c| \leqq |x^3|\]\\が成り立つように、実数$a, b, c$を定めよ
+\end{tcolorbox}
+
+お次は阪大の問題から。これは標準的な問題なんですけど、
+
+
+\[
+    \textbf{「グラフをイメージして大雑把に答だけ追いかける」}
+\]
+って姿勢がないと結構な難問に見える。どうやら数学が苦手な人は「字面だけ」でモノゴトを処理しようとしているんですね。
+数学は物理や化学とは違って、特に緻密さを強調される科目だから勘違いされやすいんですけど、\textbf{ある程度のイメージをもってぼんやり答の見当をつける}のはとても有効な手段です。
+
+
+本問ならば、
+
+
+\begin{center}「$y = | x^3 |$ と $y = | x^3 + ax^2 + bx + c |$ のグラフを比較して、\\前者のほうが後者よりも（境界も含めて）常に上側にありなさいよ」\end{center}
+ということで、$a = b = c = 0$なら「常に一致する」という状況で題意が満たされるのは自明の理。そして、
+\begin{center} \textbf{「$a, b, c$ のどれか1つでも0からずれてたら無理ちゃうの？」}\end{center}
+\begin{minipage}[t]{0.7\textwidth}
+という感覚を持てるようになってほしい。（右図参照）\\これを目指して解答を完成させるのが数学が得意な人の頭の中なわけです。
+\end{minipage}
+\hspace{5cm}
+\par
+\vspace{1em}
+
+前問を扱った直後ですから、おそらく
+
+
+\begin{center}\textbf{「必要性からせめて$x = 0$を代入しようかな？」}\end{center}
+\begin{center}
+\makebox[\textwidth][s]{\textcolor{gray}{\hfill\leaders\hrule height 5pt\hfill} \textcolor{gray}{\Huge{◆}} \textbf{解答} \textcolor{gray}{\Huge{◆}} \textcolor{gray}{\hfill\leaders\hrule height 5pt\hfill}}
+\end{center}
+\vspace{0.5em}
+
+
+\end{document}

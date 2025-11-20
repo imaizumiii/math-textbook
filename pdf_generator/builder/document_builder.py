@@ -2,12 +2,12 @@
 ドキュメントを構築するビルダークラス
 """
 
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union, Any
 from ..core.document import Document
-from ..elements.structure import Section
+from ..elements.structure import Section, DrawingSpace
 from ..elements.graphics import Image
 from ..elements.boxes import TextBox, Note, Warning, Info
-from ..elements.text import Text, Paragraph, List as ListElement
+from ..elements.text import Text, Paragraph, List as ListElement, Line
 from ..elements.math import Equation, Align
 from ..elements.tables import Table
 
@@ -15,9 +15,47 @@ from ..elements.tables import Table
 class DocumentBuilder:
     """ドキュメントを構築するビルダークラス"""
     
-    def __init__(self, title: str, author: str, date: Optional[str] = None):
+    def __init__(self, title: Optional[str] = None, author: str = "", date: Optional[str] = None):
         self.document = Document(title, author, date)
         self.current_section: Optional[Section] = None
+    
+    def _add_line_to_container(self, container: Any, text: str,
+                               line_style: str = "solid",
+                               line_thickness: str = "0.4pt",
+                               color: Optional[str] = None):
+        """
+        装飾線付きテキストをコンテナに追加する共通メソッド（例: ----解答----）
+        
+        Args:
+            container: 追加先のコンテナ（document, section, drawing_spaceなど）
+            text: 中央に表示するテキスト
+            line_style: 線のスタイル
+                - "solid": 実線（デフォルト）
+                - "dashed": 破線
+                - "dotted": 点線
+                - "double": 二重線
+            line_thickness: 線の太さ（例: "0.4pt", "1pt", "5pt"）
+            color: 線の色（例: "gray", "grey", "black", "red"など。Noneの場合は黒）
+        """
+        # 色が指定されている場合はxcolorパッケージを追加
+        if color:
+            self.add_package("xcolor")
+        line = Line(text, line_style=line_style, line_thickness=line_thickness,
+                    color=color)
+        container.add(line)
+    
+    def set_title(self, title: str):
+        """
+        タイトルを設定
+        
+        Args:
+            title: タイトル文字列
+        
+        Returns:
+            self（メソッドチェーン用）
+        """
+        self.document.title = title
+        return self
     
     def set_abstract(self, abstract: str):
         """アブストラクトを設定"""
@@ -156,6 +194,21 @@ class DocumentBuilder:
             self.document.margins["right"] = right
         return self
     
+    def set_line_spacing(self, spacing: float):
+        """
+        行間を設定
+        
+        Args:
+            spacing: 行間の倍率（例: 1.5 で1.5倍の行間、2.0 で2倍の行間）
+        
+        Example:
+            .set_line_spacing(1.5)  # 1.5倍の行間を設定
+        """
+        if spacing <= 0:
+            raise ValueError("行間の倍率は0より大きい値である必要があります")
+        self.document.line_spacing = spacing
+        return self
+    
     def add_package(self, package: str, options: Optional[str] = None):
         """パッケージを追加"""
         self.document.preamble_manager.add_package(package, options)
@@ -168,14 +221,35 @@ class DocumentBuilder:
         self.current_section = section
         return SectionBuilder(self, section)
     
-    def add_text(self, text: str):
-        """テキストを追加"""
-        self.document.add(Text(text))
+    def add_text(self, text: str, bold: bool = False):
+        """
+        テキストを追加
+        
+        Args:
+            text: テキスト文字列
+            bold: 太字にするかどうか（デフォルト: False）
+        """
+        self.document.add(Text(text, bold=bold))
         return self
     
-    def add_paragraph(self, text: str):
-        """段落を追加"""
-        self.document.add(Paragraph(text))
+    def add_paragraph(self, text: str, bold: bool = False):
+        """
+        段落を追加
+        
+        Args:
+            text: 段落のテキスト
+            bold: 太字にするかどうか（デフォルト: False）
+        """
+        self.document.add(Paragraph(text, bold=bold))
+        return self
+    
+    def add_line(self, text: str, 
+                 line_style: str = "solid",
+                 line_thickness: str = "5pt",
+                 color: Optional[str] = "gray"):
+        """装飾線付きテキストを追加（例: ----解答----）"""
+        self._add_line_to_container(self.document, text, line_style, line_thickness,
+                                    color)
         return self
     
     def add_image(self, image_path: str, caption: Optional[str] = None,
@@ -220,6 +294,27 @@ class DocumentBuilder:
         self.document.add(table)
         return self
     
+    def add_drawing_space(self, width: str = "0.7\\textwidth", 
+                         right_margin: str = "5cm") -> 'DrawingSpaceBuilder':
+        """
+        手書き用の余白を確保する領域を追加
+        
+        Args:
+            width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
+            right_margin: 右側の余白幅（例: "3cm", "5cm"）
+        
+        Returns:
+            DrawingSpaceBuilder（メソッドチェーン用）
+        
+        Example:
+            .add_drawing_space(right_margin="5cm")
+                .add_paragraph("この部分だけ右側に余白があります")
+                .end_drawing_space()
+        """
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin)
+        self.document.add(drawing_space)
+        return DrawingSpaceBuilder(self, drawing_space, parent_builder=self)
+    
     def build(self) -> Document:
         """ドキュメントを構築"""
         return self.document
@@ -232,14 +327,35 @@ class SectionBuilder:
         self.doc_builder = doc_builder
         self.section = section
     
-    def add_text(self, text: str):
-        """テキストを追加"""
-        self.section.add(Text(text))
+    def add_text(self, text: str, bold: bool = False):
+        """
+        テキストを追加
+        
+        Args:
+            text: テキスト文字列
+            bold: 太字にするかどうか（デフォルト: False）
+        """
+        self.section.add(Text(text, bold=bold))
         return self
     
-    def add_paragraph(self, text: str):
-        """段落を追加"""
-        self.section.add(Paragraph(text))
+    def add_paragraph(self, text: str, bold: bool = False):
+        """
+        段落を追加
+        
+        Args:
+            text: 段落のテキスト
+            bold: 太字にするかどうか（デフォルト: False）
+        """
+        self.section.add(Paragraph(text, bold=bold))
+        return self
+    
+    def add_line(self, text: str, 
+                 line_style: str = "solid",
+                 line_thickness: str = "5pt",
+                 color: Optional[str] = "gray"):
+        """装飾線付きテキストを追加（例: ----解答----）"""
+        self.doc_builder._add_line_to_container(self.section, text, line_style, line_thickness,
+                                                 color)
         return self
     
     def add_image(self, image_path: str, caption: Optional[str] = None,
@@ -280,7 +396,7 @@ class SectionBuilder:
         self.section.add(eq)
         return self
     
-    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = True):
+    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False):
         """複数行の数式を追加"""
         align = Align(equations, label=label, numbered=numbered)
         self.section.add(align)
@@ -299,7 +415,126 @@ class SectionBuilder:
         self.section.add(table)
         return self
     
+    def add_drawing_space(self, width: str = "0.7\\textwidth", 
+                         right_margin: str = "5cm") -> 'DrawingSpaceBuilder':
+        """
+        手書き用の余白を確保する領域を追加
+        
+        Args:
+            width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
+            right_margin: 右側の余白幅（例: "3cm", "5cm"）
+        
+        Returns:
+            DrawingSpaceBuilder（メソッドチェーン用）
+        """
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin)
+        self.section.add(drawing_space)
+        return DrawingSpaceBuilder(self.doc_builder, drawing_space, parent_builder=self)
+    
     def end_section(self) -> DocumentBuilder:
         """セクションを終了"""
         return self.doc_builder
+
+
+class DrawingSpaceBuilder:
+    """DrawingSpaceを構築するビルダー"""
+    
+    def __init__(self, doc_builder: DocumentBuilder, drawing_space: DrawingSpace, 
+                 parent_builder: Any = None):
+        self.doc_builder = doc_builder
+        self.drawing_space = drawing_space
+        # 親ビルダー（DocumentBuilderまたはSectionBuilder）を保持
+        self.parent_builder = parent_builder if parent_builder is not None else doc_builder
+    
+    def add_text(self, text: str, bold: bool = False):
+        """
+        テキストを追加
+        
+        Args:
+            text: テキスト文字列
+            bold: 太字にするかどうか（デフォルト: False）
+        """
+        self.drawing_space.add(Text(text, bold=bold))
+        return self
+    
+    def add_paragraph(self, text: str, bold: bool = False):
+        """
+        段落を追加
+        
+        Args:
+            text: 段落のテキスト
+            bold: 太字にするかどうか（デフォルト: False）
+        """
+        self.drawing_space.add(Paragraph(text, bold=bold))
+        return self
+    
+    def add_line(self, text: str, 
+                 line_style: str = "solid",
+                 line_thickness: str = "5pt",
+                 color: Optional[str] = "gray"):
+        """装飾線付きテキストを追加（例: ----解答----）"""
+        self.doc_builder._add_line_to_container(self.drawing_space, text, line_style, line_thickness,
+                                                color)
+        return self
+    
+    def add_image(self, image_path: str, caption: Optional[str] = None,
+                  width: str = "0.8", label: Optional[str] = None):
+        """画像を追加"""
+        img = Image(image_path, caption=caption, width=width, label=label)
+        self.drawing_space.add(img)
+        return self
+    
+    def add_textbox(self, content: str, title: Optional[str] = None,
+                   box_type: str = "tcolorbox", style: Optional[Dict[str, str]] = None):
+        """テキストボックスを追加"""
+        box = TextBox(content, title=title, box_type=box_type, style=style)
+        self.drawing_space.add(box)
+        return self
+    
+    def add_note(self, content: str):
+        """注意書きを追加"""
+        self.drawing_space.add(Note(content))
+        return self
+    
+    def add_warning(self, content: str):
+        """警告を追加"""
+        self.drawing_space.add(Warning(content))
+        return self
+    
+    def add_info(self, content: str):
+        """情報を追加"""
+        self.drawing_space.add(Info(content))
+        return self
+    
+    def add_equation(self, equation: str, inline: bool = False, label: Optional[str] = None):
+        """数式を追加"""
+        eq = Equation(equation, inline=inline, label=label)
+        self.drawing_space.add(eq)
+        return self
+    
+    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False):
+        """複数行の数式を追加"""
+        align = Align(equations, label=label, numbered=numbered)
+        self.drawing_space.add(align)
+        return self
+    
+    def add_list(self, items: List[str], ordered: bool = False):
+        """リストを追加"""
+        lst = ListElement(items, ordered=ordered)
+        self.drawing_space.add(lst)
+        return self
+    
+    def add_table(self, headers: List[str], rows: List[List[str]],
+                  caption: Optional[str] = None, label: Optional[str] = None):
+        """テーブルを追加"""
+        table = Table(headers, rows, caption=caption, label=label)
+        self.drawing_space.add(table)
+        return self
+    
+    def end_drawing_space(self):
+        """DrawingSpaceを終了し、親ビルダーに戻る"""
+        # parent_builderがNoneでないことを確認
+        if self.parent_builder is None:
+            return self.doc_builder
+        return self.parent_builder
 

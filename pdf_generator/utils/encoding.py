@@ -32,3 +32,26 @@ def safe_decode(byte_data: Optional[bytes],
     # すべてのエンコーディングが失敗した場合
     return str(byte_data)
 
+
+def escape_latex_special_chars(text: str) -> str:
+    """
+    LaTeXの特殊文字をエスケープする（\textbf{}コマンド内で使用する場合）
+    
+    Args:
+        text: エスケープするテキスト
+    
+    Returns:
+        エスケープされたテキスト
+    
+    Note:
+        \textbf{}コマンド内で使用する場合、{ と } をエスケープする必要があります。
+        これにより、テキスト内に含まれる中括弧がLaTeXの構文エラーを引き起こすことを防ぎます。
+        バックスラッシュは既存のLaTeXコマンドを壊さないように、そのままにします。
+    """
+    # \textbf{}コマンド内で使用する場合、{ と } をエスケープする必要がある
+    # これにより、テキスト内の中括弧がLaTeXの構文エラーを引き起こすことを防ぐ
+    # バックスラッシュは既存のLaTeXコマンドを壊さないように、そのままにする
+    text = text.replace('{', '\\{')
+    text = text.replace('}', '\\}')
+    
+    return text

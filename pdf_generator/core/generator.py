@@ -67,7 +67,10 @@ class PDFGenerator:
         
         # 出力ファイル名の決定
         if output_name is None:
-            output_name = f"{document.title.replace(' ', '_')}.pdf"
+            if document.title:
+                output_name = f"{document.title.replace(' ', '_')}.pdf"
+            else:
+                output_name = "document.pdf"
         
         # 一時的な.texファイルを作成
         temp_tex_file = temp_dir / f"{Path(output_name).stem}.tex"

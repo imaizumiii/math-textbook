@@ -12,9 +12,10 @@ from ..renderer.preamble import PreambleManager
 class Document:
     """LaTeXドキュメント全体を表現するクラス"""
     
-    def __init__(self, title: str, author: str, date: Optional[str] = None,
+    def __init__(self, title: Optional[str], author: str, date: Optional[str] = None,
                  font: str = "min", margins: Optional[Dict[str, str]] = None,
-                 font_file: Optional[str] = None, font_name: Optional[str] = None):
+                 font_file: Optional[str] = None, font_name: Optional[str] = None,
+                 line_spacing: Optional[float] = None):
         self.title = title
         self.author = author
         self.date = date
@@ -35,6 +36,10 @@ class Document:
         # 余白設定（デフォルト: None = LaTeXのデフォルト）
         # 例: {"top": "2cm", "bottom": "2cm", "left": "2cm", "right": "2cm"}
         self.margins = margins or {}
+        
+        # 行間設定（デフォルト: None = LaTeXのデフォルト）
+        # 例: 1.5 で1.5倍の行間
+        self.line_spacing = line_spacing
         
         self.preamble_manager = PreambleManager()
         self.content: List[LaTeXElement] = []
@@ -71,7 +76,7 @@ class Document:
     
     def process_fonts(self, output_dir: Path) -> Optional[str]:
         """
-        フォントファイルを出力ディレクトリにコピー
+        フォントファイルを出力ディレクトリにコピー（太字フォントも自動的にコピー）
         
         Args:
             output_dir: 出力ディレクトリ
@@ -92,6 +97,47 @@ class Document:
         
         dest_path = fonts_dir / font_path.name
         shutil.copy2(font_path, dest_path)
+        
+        # 太字フォントを自動検出してコピー
+        font_stem = font_path.stem
+        font_parent = font_path.parent
+        
+        # 一般的な太字フォント名のパターンをチェック
+        bold_patterns = [
+            font_stem.replace("Regular", "Bold"),
+            font_stem.replace("-Regular", "-Bold"),
+            font_stem.replace("_Regular", "_Bold"),
+            font_stem + "Bold",
+            font_stem + "-Bold",
+            font_stem + "_Bold",
+        ]
+        
+        # 既存のパターンから重複を除去
+        bold_patterns = list(dict.fromkeys(bold_patterns))
+        
+        bold_font_copied = False
+        for pattern in bold_patterns:
+            bold_font_path = font_parent / f"{pattern}{font_path.suffix}"
+            if bold_font_path.exists():
+                bold_dest_path = fonts_dir / bold_font_path.name
+                shutil.copy2(bold_font_path, bold_dest_path)
+                bold_font_copied = True
+                break
+        
+        # 太字フォントが見つからない場合、同じディレクトリ内の他の太字フォントを検索
+        if not bold_font_copied:
+            for bold_file in font_parent.glob("*Bold*.ttf"):
+                if bold_file.exists():
+                    bold_dest_path = fonts_dir / bold_file.name
+                    shutil.copy2(bold_file, bold_dest_path)
+                    bold_font_copied = True
+                    break
+            if not bold_font_copied:
+                for bold_file in font_parent.glob("*Bold*.otf"):
+                    if bold_file.exists():
+                        bold_dest_path = fonts_dir / bold_file.name
+                        shutil.copy2(bold_file, bold_dest_path)
+                        break
         
         # 相対パスを保存（LaTeXで使用するため）
         self.font_file = str(dest_path.absolute())
