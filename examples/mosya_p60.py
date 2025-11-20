@@ -69,7 +69,7 @@ def main():
             
             .add_paragraph("前問を扱った直後ですから、おそらく")
             .add_text(r"\begin{center}\textbf{「必要性からせめて$x = 0$を代入しようかな？」}\end{center}")
-            .add_line("解答", line_thickness="10pt")
+            .add_line("解答", line_thickness="5pt")
             .end_section()
         
         .build())

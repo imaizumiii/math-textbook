@@ -100,37 +100,46 @@ class Line(LaTeXElement):
         escaped_text = escape_latex_special_chars(self.text)
         
         # 線のスタイルに応じたLaTeXコマンドを生成
-        # シンプルで確実な方法: \hrulefill または \dotfill を使用
+        # \leadersを使用して太さを制御可能にする
+        thickness = self.line_thickness
+        
         if self.line_style == "solid":
-            # 実線: \hrulefill を使用（自動的に横いっぱいに伸びる）
+            # 実線: \leaders\hrule height {thickness} \hfill を使用
+            # \hrulefill は \leaders\hrule height 0.4pt \hfill のショートカット
             if self.color:
-                line_cmd = f"\\textcolor{{{self.color}}}{{\\hrulefill}}"
+                line_cmd = f"\\textcolor{{{self.color}}}{{\\leaders\\hrule height {thickness} \\hfill}}"
             else:
-                line_cmd = "\\hrulefill"
+                line_cmd = f"\\leaders\\hrule height {thickness} \\hfill"
         elif self.line_style == "dashed":
-            # 破線: \dotfill を使用
+            # 破線: \leaders を使って破線パターンを生成
+            # 破線のパターン: 線の長さと間隔を調整
+            dash_length = "0.5em"
+            dash_gap = "0.3em"
             if self.color:
-                line_cmd = f"\\textcolor{{{self.color}}}{{\\dotfill}}"
+                line_cmd = f"\\textcolor{{{self.color}}}{{\\leaders\\hbox to {dash_length}{{\\hss\\rule[-0.2pt]{{0.4em}}{{{thickness}}}\\hss}}\\hfill}}"
             else:
-                line_cmd = "\\dotfill"
+                line_cmd = f"\\leaders\\hbox to {dash_length}{{\\hss\\rule[-0.2pt]{{0.4em}}{{{thickness}}}\\hss}}\\hfill"
         elif self.line_style == "dotted":
-            # 点線: \dotfill を使用
+            # 点線: \leaders を使って点のパターンを生成
+            dot_spacing = "0.5em"
             if self.color:
-                line_cmd = f"\\textcolor{{{self.color}}}{{\\dotfill}}"
+                line_cmd = f"\\textcolor{{{self.color}}}{{\\leaders\\hbox to {dot_spacing}{{\\hss\\rule[-0.2pt]{{0.1pt}}{{{thickness}}}\\hss}}\\hfill}}"
             else:
-                line_cmd = "\\dotfill"
+                line_cmd = f"\\leaders\\hbox to {dot_spacing}{{\\hss\\rule[-0.2pt]{{0.1pt}}{{{thickness}}}\\hss}}\\hfill"
         elif self.line_style == "double":
-            # 二重線: \hrulefill を2回使用
+            # 二重線: 2本の線を適切な間隔で配置
+            # 線の間隔は太さに応じて調整（太さの1.5倍程度）
+            gap = f"{-float(thickness.replace('pt', '')) * 1.5}pt" if 'pt' in thickness else "-0.6pt"
             if self.color:
-                line_cmd = f"\\textcolor{{{self.color}}}{{\\hrulefill\\vspace{{-0.2pt}}\\hrulefill}}"
+                line_cmd = f"\\textcolor{{{self.color}}}{{\\leaders\\hrule height {thickness} \\hfill\\vspace{{{gap}}}\\leaders\\hrule height {thickness} \\hfill}}"
             else:
-                line_cmd = "\\hrulefill\\vspace{-0.2pt}\\hrulefill"
+                line_cmd = f"\\leaders\\hrule height {thickness} \\hfill\\vspace{{{gap}}}\\leaders\\hrule height {thickness} \\hfill"
         else:
             # デフォルトは実線
             if self.color:
-                line_cmd = f"\\textcolor{{{self.color}}}{{\\hrulefill}}"
+                line_cmd = f"\\textcolor{{{self.color}}}{{\\leaders\\hrule height {thickness} \\hfill}}"
             else:
-                line_cmd = "\\hrulefill"
+                line_cmd = f"\\leaders\\hrule height {thickness} \\hfill"
         
         # テキスト領域の端まで線を引くレイアウト
         # \makebox[\textwidth] を使ってテキスト領域の幅に合わせる
