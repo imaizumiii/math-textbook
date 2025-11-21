@@ -1,22 +1,26 @@
 {
-  // LaTeXテンプレートファイル（Jinja2構文を含む）のリンター警告を無効化
-  "latex-workshop.linting.chktex.enabled": false,
-  "latex-workshop.linting.lacheck.enabled": false,
-  
-  // 特定のファイルパターンでリンターを無効化
-  "files.associations": {
-    "templates/*.tex": "jinja-latex"
-  },
-  
-  // Jinja2テンプレートファイルの警告を抑制
-  "[jinja-latex]": {
-    "editor.defaultFormatter": null,
-    "editor.formatOnSave": false
-  },
-  
-  // LaTeXファイルのリンターチェックを緩和
-  "[latex]": {
-    "editor.semanticHighlighting.enabled": false
-  }
+    // Pythonファイルで{}を入力したときに自動的にf-stringに変換するのを無効化
+    "python.analysis.completeFunctionParens": false,
+    
+    // エディタの自動補完設定（Pythonファイル用）
+    "[python]": {
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": false
+        },
+        // 自動補完のトリガー文字を調整
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        // 自動挿入を無効化
+        "editor.acceptSuggestionOnCommitCharacter": false,
+        // スニペットの自動表示を無効化
+        "editor.suggest.showSnippets": false
+    },
+    
+    // Python拡張機能の自動補完設定
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "basic",
+    
+    // スニペットの自動補完を無効化（全体設定）
+    "editor.snippetSuggestions": "none"
 }
-

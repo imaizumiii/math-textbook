@@ -15,9 +15,10 @@ class LaTeXRenderer:
         """ドキュメント全体をLaTeXコードに変換"""
         latex = []
         
-        # プリアンブル（余白設定とフォントファイル情報を渡す）
+        # プリアンブル（余白設定、行間設定、フォントファイル情報を渡す）
         latex.append(document.preamble_manager.generate_preamble(
             margins=document.margins,
+            line_spacing=document.line_spacing,
             font_file=document.font_file,
             font_name=document.font_name
         ))
@@ -31,10 +32,10 @@ class LaTeXRenderer:
             # フォント設定を反映（デフォルト: min=明朝体, goth=ゴシック体）
             latex.append(f"\\begin{{CJK}}{{UTF8}}{{{document.font}}}\n")
         
-        # タイトル（現在は自動出力しない）
-        title_block = self._render_title(document)
-        if title_block:
-            latex.append(title_block)
+        # タイトル（titleが設定されている場合のみ）
+        title_content = self._render_title(document)
+        if title_content:
+            latex.append(title_content)
         
         # アブストラクト
         if document.abstract:
@@ -55,10 +56,19 @@ class LaTeXRenderer:
         return "".join(latex)
     
     def _render_title(self, document: 'Document') -> str:
-        """
-        タイトルセクションを生成
+        # titleがNoneまたは空文字列の場合は何も表示しない
+        if not document.title:
+            return ""
         
-        仕様変更: タイトル/名前/日付の自動出力を行わないため、空文字を返す。
-        """
-        return ""
+        result = "\\begin{center}\n"
+        result += f"{{\\Large\\bfseries {document.title} }}\\\\[1em]\n"
+        if document.author:
+            result += f"{document.author} \\\\[0.5em]\n"
+        if document.date:
+            result += f"{document.date}\n"
+        elif document.author:
+            result += "\\today\n"
+        result += "\\end{center}\n"
+        result += "\\vspace{2em}\n\n"
+        return result
 

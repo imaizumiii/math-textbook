@@ -3,11 +3,11 @@ LaTeX要素クラス群
 """
 
 from .base import LaTeXElement
-from .text import Text, Paragraph, List
+from .text import Text, Paragraph, List, Line
 from .math import Equation, Align
 from .graphics import Image, Figure
 from .boxes import TextBox, Note, Warning, Info
-from .structure import Section, Chapter, TableOfContents
+from .structure import Section, Chapter, TableOfContents, DrawingSpace
 from .tables import Table
 
 __all__ = [
@@ -15,6 +15,7 @@ __all__ = [
     'Text',
     'Paragraph',
     'List',
+    'Line',
     'Equation',
     'Align',
     'Image',
@@ -26,6 +27,7 @@ __all__ = [
     'Section',
     'Chapter',
     'TableOfContents',
+    'DrawingSpace',
     'Table',
 ]
 
