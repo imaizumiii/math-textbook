@@ -157,3 +157,47 @@ class Line(LaTeXElement):
             result += child.to_latex() + "\n"
         
         return result
+
+
+class Divider(LaTeXElement):
+    """軽い区切り要素（例: *        *        *）"""
+    
+    def __init__(self, symbol: str = "*", spacing: str = "10em", 
+                 vspace: str = "-1em", vspace_before: Optional[str] = None,
+                 vspace_after: Optional[str] = None):
+        """
+        Args:
+            symbol: 区切りに使用する記号（デフォルト: "*"）
+            spacing: 記号間の間隔（デフォルト: "2em"、例: "1em", "2em", "3em"など）
+            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
+            vspace_before: 上の余白（指定時はvspaceより優先）
+            vspace_after: 下の余白（指定時はvspaceより優先）
+        """
+        super().__init__()
+        self.symbol = symbol
+        self.spacing = spacing
+        self.vspace_before = vspace_before if vspace_before is not None else vspace
+        self.vspace_after = vspace_after if vspace_after is not None else vspace
+    
+    def to_latex(self) -> str:
+        # 記号をエスケープ
+        escaped_symbol = escape_latex_special_chars(self.symbol)
+        
+        # 3つの記号を指定された間隔で配置
+        result = f"\\vspace{{{self.vspace_before}}}\n"  # 上の余白
+        result += "\\begin{center}\n"
+        result += f"{escaped_symbol}\\hspace{{{self.spacing}}} {escaped_symbol}\\hspace{{{self.spacing}}} {escaped_symbol}"
+        result += "\n"
+        result += "\\end{center}\n"
+        result += f"\\vspace{{{self.vspace_after}}}\n"  # 下の余白
+        
+        for child in self.children:
+            result += child.to_latex() + "\n"
+        
+        return result
+    
+    def process_resources(self, output_dir):
+        result = {}
+        for child in self.children:
+            result.update(child.process_resources(output_dir))
+        return result

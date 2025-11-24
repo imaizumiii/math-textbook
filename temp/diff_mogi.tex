@@ -1,0 +1,72 @@
+\documentclass[a4paper]{article}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+
+% フォント設定
+\setCJKmainfont{Noto Sans JP}[Path=fonts/, UprightFont=NotoSansJP-Regular.ttf, BoldFont=NotoSansJP-Bold.ttf]
+
+\usepackage[top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.8}
+
+\begin{document}
+\section{微分積分とは？}
+
+みなさん、\textbf{”微分積分”}って聞いたことありますか？ 「難しそう」という感想を持つ人がほとんどだと思いますが、実はすごくシンプルで便利なツールなんですよ。
+
+
+\vspace{-1em}
+\begin{center}
+*\hspace{10em} *\hspace{10em} *
+\end{center}
+\vspace{-1em}
+
+では、復習。\textbf{”変化の割合”}という言葉はきいたことあると思います。$\text{変化の割合}=\frac{\text{$y$の増加量}}{\text{$x$の増加量}}$とかいうやつです。具体例を用いながら思い出していきましょう♪
+
+
+\noindent
+\makebox[\textwidth][l]{%
+\begin{minipage}[t]{0.6\textwidth}
+$y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。
+\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(2) - f(1)}{2 - 1} =\dfrac{2^2 - 1^2}{2 - 1} = 3$\end{center}
+さて、ここからは文字にしていきます。文字にしたとたんにわからない人が急増するのでお気を付けを。
+\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(x+h) - f(x)}{(x+h) - x} =\dfrac{f(x+h) - f(x)}{h}$\end{center}
+具体例では「$\boldsymbol{1 \rightarrow 2}$」という変化でしたが、これを「$\boldsymbol{x \rightarrow x+h}$」という変化にしてみました。
+\end{minipage}
+\hspace{20cm}
+}%
+\par
+\vspace{1em}
+
+\begin{tcolorbox}[title={例題}]
+どのような実数$x$に対しても、不等式\\\[|x^3 + ax^2 + bx + c| \leqq |x^3|\]\\が成り立つように、実数$a, b, c$を定めよ
+\end{tcolorbox}
+
+\begin{center} \textbf{「$a, b, c$ のどれか1つでも0からずれてたら無理ちゃうの？」}\end{center}
+\noindent
+\makebox[\textwidth][l]{%
+\begin{minipage}[t]{0.7\textwidth}
+という感覚を持てるようになってほしい。（右図参照）\\これを目指して解答を完成させるのが数学が得意な人の頭の中なわけです。
+\end{minipage}
+\hspace{5cm}
+}%
+\par
+\vspace{1em}
+
+前問を扱った直後ですから、おそらく
+
+
+\begin{center}
+\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hrule height 5pt \hfill}\quad\textbf{解答}\quad\textcolor{gray}{\leaders\hrule height 5pt \hfill}}
+\end{center}
+\vspace{0.5em}
+
+
+\end{document}

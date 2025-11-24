@@ -7,7 +7,7 @@ from ..core.document import Document
 from ..elements.structure import Section, DrawingSpace
 from ..elements.graphics import Image
 from ..elements.boxes import TextBox, Note, Warning, Info
-from ..elements.text import Text, Paragraph, List as ListElement, Line
+from ..elements.text import Text, Paragraph, List as ListElement, Line, Divider
 from ..elements.math import Equation, Align
 from ..elements.tables import Table
 
@@ -252,6 +252,28 @@ class DocumentBuilder:
                                     color)
         return self
     
+    def add_divider(self, symbol: str = "*", spacing: str = "10em",
+                    vspace: str = "-1em", 
+                    vspace_before: Optional[str] = None,
+                    vspace_after: Optional[str] = None):
+        """
+        軽い区切りを追加（例: *        *        *）
+        
+        Args:
+            symbol: 区切りに使用する記号（デフォルト: "*"）
+            spacing: 記号間の間隔（デフォルト: "10em"、例: "1em", "1.5em", "10em"など）
+            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
+            vspace_before: 上の余白（指定時はvspaceより優先）
+            vspace_after: 下の余白（指定時はvspaceより優先）
+        
+        Returns:
+            self（メソッドチェーン用）
+        """
+        self.document.add(Divider(symbol=symbol, spacing=spacing, vspace=vspace, 
+                                  vspace_before=vspace_before, 
+                                  vspace_after=vspace_after))
+        return self
+    
     def add_image(self, image_path: str, caption: Optional[str] = None,
                   width: str = "0.8", label: Optional[str] = None):
         """画像を追加"""
@@ -356,6 +378,28 @@ class SectionBuilder:
         """装飾線付きテキストを追加（例: ----解答----）"""
         self.doc_builder._add_line_to_container(self.section, text, line_style, line_thickness,
                                                  color)
+        return self
+    
+    def add_divider(self, symbol: str = "*", spacing: str = "10em",
+                    vspace: str = "-1em", 
+                    vspace_before: Optional[str] = None,
+                    vspace_after: Optional[str] = None):
+        """
+        軽い区切りを追加（例: *        *        *）
+        
+        Args:
+            symbol: 区切りに使用する記号（デフォルト: "*"）
+            spacing: 記号間の間隔（デフォルト: "10em"、例: "1em", "1.5em", "10em"など）
+            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
+            vspace_before: 上の余白（指定時はvspaceより優先）
+            vspace_after: 下の余白（指定時はvspaceより優先）
+        
+        Returns:
+            self（メソッドチェーン用）
+        """
+        self.section.add(Divider(symbol=symbol, spacing=spacing, vspace=vspace, 
+                                 vspace_before=vspace_before, 
+                                 vspace_after=vspace_after))
         return self
     
     def add_image(self, image_path: str, caption: Optional[str] = None,
@@ -475,6 +519,28 @@ class DrawingSpaceBuilder:
         """装飾線付きテキストを追加（例: ----解答----）"""
         self.doc_builder._add_line_to_container(self.drawing_space, text, line_style, line_thickness,
                                                 color)
+        return self
+    
+    def add_divider(self, symbol: str = "*", spacing: str = "10em",
+                    vspace: str = "-1em", 
+                    vspace_before: Optional[str] = None,
+                    vspace_after: Optional[str] = None):
+        """
+        軽い区切りを追加（例: *        *        *）
+        
+        Args:
+            symbol: 区切りに使用する記号（デフォルト: "*"）
+            spacing: 記号間の間隔（デフォルト: "10em"、例: "1em", "1.5em", "10em"など）
+            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
+            vspace_before: 上の余白（指定時はvspaceより優先）
+            vspace_after: 下の余白（指定時はvspaceより優先）
+        
+        Returns:
+            self（メソッドチェーン用）
+        """
+        self.drawing_space.add(Divider(symbol=symbol, spacing=spacing, vspace=vspace, 
+                                       vspace_before=vspace_before, 
+                                       vspace_after=vspace_after))
         return self
     
     def add_image(self, image_path: str, caption: Optional[str] = None,

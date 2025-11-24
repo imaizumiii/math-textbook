@@ -84,12 +84,16 @@ class DrawingSpace(LaTeXElement):
         self.right_margin = right_margin
     
     def to_latex(self) -> str:
-        # minipage環境を使用して幅を制限
-        result = f"\\begin{{minipage}}[t]{{{self.width}}}\n"
+        # minipage環境を使用して幅を制限し、右側に余白を確保
+        # \makebox[\textwidth][l]{...}を使用して、minipageとhspaceを同じ行に配置
+        result = "\\noindent\n"
+        result += f"\\makebox[\\textwidth][l]{{%\n"
+        result += f"\\begin{{minipage}}[t]{{{self.width}}}\n"
         for child in self.children:
             result += child.to_latex() + "\n"
         result += f"\\end{{minipage}}\n"
         result += f"\\hspace{{{self.right_margin}}}\n"
+        result += "}%\n"
         result += "\\par\n"  # 段落を終了して適切な間隔を確保
         result += "\\vspace{1em}\n"  # 追加の間隔を確保
         return result
