@@ -45,7 +45,7 @@ def main():
         # .set_abstract("このレポートでは、PythonとLaTeXの連携について説明します。")
 
         # セクション2: 計算結果
-        .add_section("【無限大も特別な値の候補の１つ】")
+        .add_section("Theme1-8:【無限大も特別な値の候補の１つ】")
         
             .add_textbox(title="例題", content=r"どのような実数$x$に対しても、不等式\\\[|x^3 + ax^2 + bx + c| \leqq |x^3|\]\\が成り立つように、実数$a, b, c$を定めよ")
 
@@ -68,7 +68,7 @@ def main():
             .end_drawing_space()
             
             .add_paragraph("前問を扱った直後ですから、おそらく")
-            .add_text(r"\begin{center}\textbf{「必要性からせめて$x = 0$を代入しようかな？」}\end{center}")
+            .add_text(r"\begin{center}\textbf{「必要性からせめて$\boldsymbol{x = 0}$を代入しようかな？」}\end{center}")
             .add_line("解答", line_thickness="5pt")
             .end_section()
         
