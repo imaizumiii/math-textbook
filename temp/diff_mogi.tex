@@ -17,7 +17,7 @@
 \setstretch{1.8}
 
 \begin{document}
-\section{微分積分とは？}
+\section*{Theme: 微分積分とは？}
 
 みなさん、\textbf{”微分積分”}って聞いたことありますか？ 「難しそう」という感想を持つ人がほとんどだと思いますが、実はすごくシンプルで便利なツールなんですよ。
 
@@ -33,50 +33,42 @@
 
 \noindent
 \makebox[\textwidth][l]{%
-\begin{minipage}[t]{0.6\textwidth}
+\begin{minipage}[t]{0.65\textwidth}
 $y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。
 
 
 \begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(2) - f(1)}{2 - 1} =\dfrac{2^2 - 1^2}{2 - 1} = 3$\end{center}
 さて、ここからは文字にしていきます。文字にしたとたんにわからない人が急増するのでお気を付けを。
 \begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(x+h) - f(x)}{(x+h) - x} =\dfrac{f(x+h) - f(x)}{h}$\end{center}
-具体例では「$\boldsymbol{1 \rightarrow 2}$」という変化でしたが、これを「$\boldsymbol{x \rightarrow x+h}$」という変化にしてみました。グラフからよく確認しておいてください。
+具体例では\textbf{「} $\boldsymbol{1 \rightarrow 2}$ \textbf{」}という変化でしたが、これを\textbf{「} $\boldsymbol{x \rightarrow x+h}$ \textbf{」}という変化にしてみました。グラフからよく確認しておいてください。
 \end{minipage}
 \hspace{20cm}
 }%
 \par
 \vspace{1em}
 
-さて、ここで微分係数を求める公式（定義）を紹介することにします。
-
-
+このタイミングで微分係数を求める公式（定義）を紹介することにします。
 \begin{tcolorbox}[before upper={\setlength{\abovedisplayskip}{5pt}\setlength{\belowdisplayskip}{5pt}\setlength{\abovedisplayshortskip}{0pt}\setlength{\belowdisplayshortskip}{0pt}}, title={微分係数の求め方（定義）}]
 関数$f(x)$の微分係数$f'(x)$は以下のように定義される。\[ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \]
 \end{tcolorbox}
 
-\[
-    E = mc^2
-\]
-\begin{tcolorbox}[before upper={\setlength{\abovedisplayskip}{5pt}\setlength{\belowdisplayskip}{5pt}\setlength{\abovedisplayshortskip}{0pt}\setlength{\belowdisplayshortskip}{0pt}}, title={例題}]
-どのような実数$x$に対しても、不等式\[ |x^3 + ax^2 + bx + c| \leqq |x^3| \]が成り立つように、実数$a, b, c$を定めよ
-\end{tcolorbox}
+\begin{center} \textbf{さっき作った式にすごく似ていることがわかりますね？}\end{center}
+さっきの図をでは、幅を$\boldsymbol{h}$としていたので、「\textbf{その幅をごくごく小さくすれば、瞬間の変化率がわかるんじゃね？」}という発想になります。実際にさっきの例で計算してみましょうか。
+\begin{align*}
+    \begin{aligned}
+    f'(x)      & = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \\
+               & = \lim_{h \to 0} \frac{(x+h)^2 - x^2}{h} \\
+               & = \lim_{h \to 0} \frac{x^2 + 2xh + h^2 - x^2}{h} \\
+               & = \lim_{h \to 0} \frac{2xh + h^2}{h} \\
+               & = \lim_{h \to 0} (2x + h) \\
+               & = 2x
+    \end{aligned}
+\end{align*}
 
-\begin{center} \textbf{「$a, b, c$ のどれか1つでも0からずれてたら無理ちゃうの？」}\end{center}
-\noindent
-\makebox[\textwidth][l]{%
-\begin{minipage}[t]{0.7\textwidth}
-という感覚を持てるようになってほしい。（右図参照）\\これを目指して解答を完成させるのが数学が得意な人の頭の中なわけです。
-\end{minipage}
-\hspace{5cm}
-}%
-\par
-\vspace{1em}
-
-前問を扱った直後ですから、おそらく
-
-
+よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の微分係数を求めろ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の微分係数」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。
+\textbf{これがとても便利なんですよ。}今回はこれで終わりですが、この分野は物理や数学以外にも、経済学や社会学でもよく使われるので、ぜひこれを機に微分積分を学んでみてください。少しだけ問題を解いて終わることとしましょう。
 \begin{center}
-\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hrule height 5pt \hfill}\quad\textbf{解答}\quad\textcolor{gray}{\leaders\hrule height 5pt \hfill}}
+\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hrule height 5pt \hfill}\quad\textbf{問題（教科書P.114問3）}\quad\textcolor{gray}{\leaders\hrule height 5pt \hfill}}
 \end{center}
 \vspace{0.5em}
 

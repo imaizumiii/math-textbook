@@ -214,9 +214,17 @@ class DocumentBuilder:
         self.document.preamble_manager.add_package(package, options)
         return self
     
-    def add_section(self, title: str, level: int = 1, label: Optional[str] = None) -> 'SectionBuilder':
-        """セクションを追加"""
-        section = Section(title, level=level, label=label)
+    def add_section(self, title: str, level: int = 1, label: Optional[str] = None, numbered: bool = False) -> 'SectionBuilder':
+        """
+        セクションを追加
+        
+        Args:
+            title: セクションのタイトル
+            level: セクションのレベル（1: section, 2: subsection, ...）
+            label: 参照用のラベル
+            numbered: 番号を振るかどうか（デフォルト: False）
+        """
+        section = Section(title, level=level, label=label, numbered=numbered)
         self.document.add(section)
         self.current_section = section
         return SectionBuilder(self, section)

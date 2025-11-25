@@ -50,7 +50,7 @@ def main():
         .set_line_spacing(1.8)  # 行間を1.5倍に設定
         # .set_abstract("このレポートでは、PythonとLaTeXの連携について説明します。")
         # セクション2: 計算結果
-        .add_section("微分積分とは？")
+        .add_section("Theme: 微分積分とは？")
         # 導入
         .add_paragraph(
             r"みなさん、\textbf{”微分積分”}って聞いたことありますか？ 「難しそう」という感想を持つ人がほとんどだと思いますが、実はすごくシンプルで便利なツールなんですよ。"
@@ -61,7 +61,7 @@ def main():
         )
         .add_divider()
         # 具体例　グラフ挿入
-        .add_drawing_space(width="0.6\\textwidth", right_margin="20cm")
+        .add_drawing_space(width="0.65\\textwidth", right_margin="20cm")
         .add_paragraph(
             r"$y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。"
         )
@@ -75,36 +75,43 @@ def main():
             r"\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(x+h) - f(x)}{(x+h) - x} =\dfrac{f(x+h) - f(x)}{h}$\end{center}"
         )
         .add_text(
-            r"具体例では「$\boldsymbol{1 \rightarrow 2}$」という変化でしたが、これを「$\boldsymbol{x \rightarrow x+h}$」という変化にしてみました。グラフからよく確認しておいてください。"
+            r"具体例では\textbf{「} $\boldsymbol{1 \rightarrow 2}$ \textbf{」}という変化でしたが、これを\textbf{「} $\boldsymbol{x \rightarrow x+h}$ \textbf{」}という変化にしてみました。グラフからよく確認しておいてください。"
         )
         .end_drawing_space()
         # 公式紹介
-        .add_paragraph(
-            "さて、ここで微分係数を求める公式（定義）を紹介することにします。"
+        .add_text(
+            "このタイミングで微分係数を求める公式（定義）を紹介することにします。"
         )
         .add_textbox(
             title="微分係数の求め方（定義）",
             content=r"関数$f(x)$の微分係数$f'(x)$は以下のように定義される。\[ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \]",
             style=math_box_style,
         )
-        
-        .add_equation(r"E = mc^2")
-        
-        .add_textbox(
-            title="例題",
-            content=r"どのような実数$x$に対しても、不等式\[ |x^3 + ax^2 + bx + c| \leqq |x^3| \]が成り立つように、実数$a, b, c$を定めよ",
-            style=math_box_style,
+        .add_text(
+            r"\begin{center} \textbf{さっき作った式にすごく似ていることがわかりますね？}\end{center}"
         )
         .add_text(
-            r"\begin{center} \textbf{「$a, b, c$ のどれか1つでも0からずれてたら無理ちゃうの？」}\end{center}"
+            r"さっきの図をでは、幅を$\boldsymbol{h}$としていたので、「\textbf{その幅をごくごく小さくすれば、瞬間の変化率がわかるんじゃね？」}という発想になります。実際にさっきの例で計算してみましょうか。"
         )
-        .add_drawing_space(width="0.7\\textwidth", right_margin="5cm")
+        .add_align(
+            [
+                r"\begin{aligned}",
+                r"f'(x)      & = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \\",
+                r"           & = \lim_{h \to 0} \frac{(x+h)^2 - x^2}{h} \\",
+                r"           & = \lim_{h \to 0} \frac{x^2 + 2xh + h^2 - x^2}{h} \\",
+                r"           & = \lim_{h \to 0} \frac{2xh + h^2}{h} \\",
+                r"           & = \lim_{h \to 0} (2x + h) \\",
+                r"           & = 2x",
+                r"\end{aligned}",
+            ]
+        )
         .add_text(
-            r"という感覚を持てるようになってほしい。（右図参照）\\これを目指して解答を完成させるのが数学が得意な人の頭の中なわけです。"
+            r"よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の微分係数を求めろ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の微分係数」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。"
         )
-        .end_drawing_space()
-        .add_paragraph("前問を扱った直後ですから、おそらく")
-        .add_line("解答", line_thickness="5pt")
+        .add_paragraph(
+            r"\textbf{これがとても便利なんですよ。}今回はこれで終わりですが、この分野は物理や数学以外にも、経済学や社会学でもよく使われるので、ぜひこれを機に微分積分を学んでみてください。少しだけ問題を解いて終わることとしましょう。"
+        )
+        .add_line("問題（教科書P.114問3）", line_thickness="5pt")
         .end_section()
         .build()
     )

@@ -9,11 +9,12 @@ from .base import LaTeXElement
 class Section(LaTeXElement):
     """セクション要素"""
     
-    def __init__(self, title: str, level: int = 1, label: Optional[str] = None):
+    def __init__(self, title: str, level: int = 1, label: Optional[str] = None, numbered: bool = True):
         super().__init__()
         self.title = title
         self.level = level
         self.label = label
+        self.numbered = numbered
     
     def to_latex(self) -> str:
         commands = {
@@ -25,6 +26,9 @@ class Section(LaTeXElement):
         }
         
         cmd = commands.get(self.level, "\\section")
+        if not self.numbered:
+            cmd += "*"
+            
         result = f"{cmd}{{{self.title}}}\n"
         
         if self.label:
