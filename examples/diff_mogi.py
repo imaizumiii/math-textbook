@@ -22,6 +22,11 @@ def main():
     print("PDFGeneratorを初期化しています...")
     generator = PDFGenerator()
 
+    # 数式の上下余白を調整するスタイル
+    math_box_style = {
+        "before upper": r"{\setlength{\abovedisplayskip}{5pt}\setlength{\belowdisplayskip}{5pt}\setlength{\abovedisplayshortskip}{0pt}\setlength{\belowdisplayshortskip}{0pt}}"
+    }
+
     # DocumentBuilderでドキュメントを構築
     print("ドキュメントを構築しています...")
     doc = (
@@ -79,14 +84,16 @@ def main():
         )
         .add_textbox(
             title="微分係数の求め方（定義）",
-            content=r"関数$f(x)$の微分係数$f'(x)$は以下のように定義される。\\\begin{center}$\displaystyle f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$\end{center}",
+            content=r"関数$f(x)$の微分係数$f'(x)$は以下のように定義される。\[ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \]",
+            style=math_box_style,
         )
         
         .add_equation(r"E = mc^2")
         
         .add_textbox(
             title="例題",
-            content=r"どのような実数$x$に対しても、不等式\\\[|x^3 + ax^2 + bx + c| \leqq |x^3|\]\\が成り立つように、実数$a, b, c$を定めよ",
+            content=r"どのような実数$x$に対しても、不等式\[ |x^3 + ax^2 + bx + c| \leqq |x^3| \]が成り立つように、実数$a, b, c$を定めよ",
+            style=math_box_style,
         )
         .add_text(
             r"\begin{center} \textbf{「$a, b, c$ のどれか1つでも0からずれてたら無理ちゃうの？」}\end{center}"
