@@ -16,7 +16,7 @@ from pdf_generator.builder import DocumentBuilder
 
 
 def main():
-    output_name = "mosya_p60.pdf"
+    output_name = "diff_mogi.pdf"
     """メイン関数"""
     # PDFGeneratorの初期化
     print("PDFGeneratorを初期化しています...")
@@ -41,25 +41,32 @@ def main():
         # )
         
         .set_margins(top="2cm", bottom="2cm", left="2cm", right="2cm")  # 余白を設定
-        .set_line_spacing(1.5)  # 行間を1.5倍に設定
+        .set_line_spacing(1.8)  # 行間を1.5倍に設定
         # .set_abstract("このレポートでは、PythonとLaTeXの連携について説明します。")
 
         # セクション2: 計算結果
-        .add_section("Theme1-8:【無限大も特別な値の候補の１つ】")
-        
+        .add_section("微分積分とは？")
+            
+            .add_paragraph(r"みなさん、\textbf{”微分積分”}って聞いたことありますか？ 「難しそう」という感想を持つ人がほとんどだと思いますが、実はすごくシンプルで便利なツールなんですよ。")
+            .add_divider()
+            
+            .add_paragraph(r"では、復習。\textbf{”変化の割合”}という言葉はきいたことあると思います。$\text{変化の割合}=\frac{\text{$y$の増加量}}{\text{$x$の増加量}}$とかいうやつです。具体例を用いながら思い出していきましょう♪")
+
+            .add_drawing_space(width="0.6\\textwidth", right_margin="20cm")
+
+            .add_text(r'$y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。')
+
+            .add_text(r"\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(2) - f(1)}{2 - 1} =\dfrac{2^2 - 1^2}{2 - 1} = 3$\end{center}")
+            
+            .add_text(r"さて、ここからは文字にしていきます。文字にしたとたんにわからない人が急増するのでお気を付けを。")
+
+            .add_text(r"\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(x+h) - f(x)}{(x+h) - x} =\dfrac{f(x+h) - f(x)}{h}$\end{center}")
+            
+            .add_text(r"具体例では「$\boldsymbol{1 \rightarrow 2}$」という変化でしたが、これを「$\boldsymbol{x \rightarrow x+h}$」という変化にしてみました。")
+
+            .end_drawing_space()
+            
             .add_textbox(title="例題", content=r"どのような実数$x$に対しても、不等式\\\[|x^3 + ax^2 + bx + c| \leqq |x^3|\]\\が成り立つように、実数$a, b, c$を定めよ")
-
-            .add_paragraph("お次は阪大の問題から。これは標準的な問題なんですけど、")
-            .add_equation(r"\textbf{「グラフをイメージして大雑把に答だけ追いかける」}")
-            .add_text("って姿勢がないと結構な難問に見える。どうやら数学が苦手な人は「字面だけ」でモノゴトを処理しようとしているんですね。")
-
-            .add_paragraph(r"数学は物理や化学とは違って、特に緻密さを強調される科目だから勘違いされやすいんですけど、\textbf{ある程度のイメージをもってぼんやり答の見当をつける}のはとても有効な手段です。")
-
-            .add_paragraph("本問ならば、")
-
-            .add_text(r"\begin{center}「$y = | x^3 |$ と $y = | x^3 + ax^2 + bx + c |$ のグラフを比較して、\\前者のほうが後者よりも（境界も含めて）常に上側にありなさいよ」\end{center}")
-
-            .add_text(r"ということで、$a = b = c = 0$なら「常に一致する」という状況で題意が満たされるのは自明の理。そして、")
 
             .add_text(r"\begin{center} \textbf{「$a, b, c$ のどれか1つでも0からずれてたら無理ちゃうの？」}\end{center}")
 
@@ -68,7 +75,6 @@ def main():
             .end_drawing_space()
             
             .add_paragraph("前問を扱った直後ですから、おそらく")
-            .add_text(r"\begin{center}\textbf{「必要性からせめて$\boldsymbol{x = 0}$を代入しようかな？」}\end{center}")
             .add_line("解答", line_thickness="5pt")
             .end_section()
         
