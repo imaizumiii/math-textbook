@@ -16,7 +16,7 @@ from pdf_generator import PDFGenerator
 
 
 def main():
-    output_name = "diff_mogi.pdf"
+    output_name = "explain_function.pdf"
     """メイン関数"""
     # PDFGeneratorの初期化
     print("PDFGeneratorを初期化しています...")
@@ -40,9 +40,31 @@ def main():
         .set_line_spacing(1.8)  # 行間を1.8倍に設定
         
         # ここから内容を追加
-        .add_section("Theme: 関数$f(x)$とは？（中学、高校生向け）")
+        .add_section("Theme: 関数$f(x)$とは？（中学生、高校生向け）")
         
-        .add_text(r"\textbf{”関数”}という言葉がなじみ始める、中学二年生の「一次関数」という単元ではないでしょうか。高校生なんかはもっといろんなところでこの言葉を耳にしていますよね。")
+        .add_text(r"\quad \textbf{”関数”} という言葉がなじみ始めるのは、中学二年生の「一次関数」という単元ではないでしょうか。高校生なんかは、もっといろんなところでこの言葉を耳にしていますよね。ここでは、「関数」について小学生でも理解できるように簡単に説明していきますので、ぜひ見ていってください。")
+        
+        .add_divider()
+        
+        .add_text(r"\quad 「関数」という言葉ですが、数学以外でも、\textbf{プログラミングの世界で良く出現するんです。} そちらの世界の説明のほうがわかりやすいので、少しお借りすることとします。\\")
+
+        .add_blank_space("3cm")
+        
+        .add_text(r"\quad 関数はよく、\textbf{「数字の工場」}と表現されます。何かを作るにはまず材料が必要ですよね。工場に入れる材料のことを、\textbf{変数}だとか\textbf{引数}、\textbf{入力値} とか言ったりもします。\\")
+        
+        .add_text(r"すると、工場は製品を作ってくれます。この出来上がった製品のことを、\textbf{出力値}とか\textbf{返り値}といいます。\\")
+        
+        .add_text(r"\quad それでは、なじみの深いであろう$\boldsymbol{y = 2x + 1}$という一次関数について見ていきましょうか。")
+
+        .add_divider()
+        
+        .add_drawing_space(width="0.5\\textwidth", right_margin="2cm")
+            .add_text(r"数学の世界では、\textbf{入力値を} $\boldsymbol{x}$、\textbf{出力値を} $\boldsymbol{y}$や $\boldsymbol{f(x)}$とすることが多いです。 ")
+            .add_text(r"せっかくなので中学生の皆さんも$f(x)$という書き方で見ていきましょうか。")
+            .add_text(r"$f(x) = 2x + 1$")
+        .end_drawing_space()
+        
+        
         
         .end_section()
         .build()

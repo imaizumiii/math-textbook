@@ -4,7 +4,7 @@
 
 from typing import Optional, Dict, List, Union, Any
 from ..core.document import Document
-from ..elements.structure import Section, DrawingSpace
+from ..elements.structure import Section, DrawingSpace, Exercise, BlankSpace
 from ..elements.graphics import Image
 from ..elements.boxes import TextBox, Note, Warning, Info
 from ..elements.text import Text, Paragraph, List as ListElement, Line, Divider
@@ -344,6 +344,16 @@ class DocumentBuilder:
         self.document.add(table)
         return self
     
+    def add_blank_space(self, height: str):
+        """
+        手書き用の空白スペースを追加
+        
+        Args:
+            height: 空白の高さ（例: "5cm", "50mm", "10em"）
+        """
+        self.document.add(BlankSpace(height))
+        return self
+    
     def add_drawing_space(self, width: str = "0.7\\textwidth", 
                          right_margin: str = "5cm") -> 'DrawingSpaceBuilder':
         """
@@ -364,6 +374,28 @@ class DocumentBuilder:
         drawing_space = DrawingSpace(width=width, right_margin=right_margin)
         self.document.add(drawing_space)
         return DrawingSpaceBuilder(self, drawing_space, parent_builder=self)
+    
+    def add_exercise(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1):
+        """
+        小問（練習問題）を追加
+        
+        Args:
+            title: 小問のタイトル（例: "練習4"）
+            content: 問題の本文
+            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
+            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
+        
+        Returns:
+            self（メソッドチェーン用）
+        
+        Example:
+            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
+        """
+        if columns > 1:
+            self.add_package("multicol")
+        exercise = Exercise(title=title, content=content, items=items, columns=columns)
+        self.document.add(exercise)
+        return self
     
     def build(self) -> Document:
         """ドキュメントを構築"""
@@ -499,6 +531,16 @@ class SectionBuilder:
         self.section.add(Paragraph(formatted_text))
         return self
     
+    def add_blank_space(self, height: str):
+        """
+        手書き用の空白スペースを追加
+        
+        Args:
+            height: 空白の高さ（例: "5cm", "50mm", "10em"）
+        """
+        self.section.add(BlankSpace(height))
+        return self
+    
     def add_drawing_space(self, width: str = "0.7\\textwidth", 
                          right_margin: str = "5cm") -> 'DrawingSpaceBuilder':
         """
@@ -514,6 +556,28 @@ class SectionBuilder:
         drawing_space = DrawingSpace(width=width, right_margin=right_margin)
         self.section.add(drawing_space)
         return DrawingSpaceBuilder(self.doc_builder, drawing_space, parent_builder=self)
+    
+    def add_exercise(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1):
+        """
+        小問（練習問題）を追加
+        
+        Args:
+            title: 小問のタイトル（例: "練習4"）
+            content: 問題の本文
+            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
+            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
+        
+        Returns:
+            self（メソッドチェーン用）
+        
+        Example:
+            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
+        """
+        if columns > 1:
+            self.doc_builder.add_package("multicol")
+        exercise = Exercise(title=title, content=content, items=items, columns=columns)
+        self.section.add(exercise)
+        return self
     
     def end_section(self) -> DocumentBuilder:
         """セクションを終了"""
@@ -635,6 +699,38 @@ class DrawingSpaceBuilder:
         """テーブルを追加"""
         table = Table(headers, rows, caption=caption, label=label)
         self.drawing_space.add(table)
+        return self
+    
+    def add_blank_space(self, height: str):
+        """
+        手書き用の空白スペースを追加
+        
+        Args:
+            height: 空白の高さ（例: "5cm", "50mm", "10em"）
+        """
+        self.drawing_space.add(BlankSpace(height))
+        return self
+    
+    def add_exercise(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1):
+        """
+        小問（練習問題）を追加
+        
+        Args:
+            title: 小問のタイトル（例: "練習4"）
+            content: 問題の本文
+            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
+            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
+        
+        Returns:
+            self（メソッドチェーン用）
+        
+        Example:
+            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
+        """
+        if columns > 1:
+            self.doc_builder.add_package("multicol")
+        exercise = Exercise(title=title, content=content, items=items, columns=columns)
+        self.drawing_space.add(exercise)
         return self
     
     def end_drawing_space(self):

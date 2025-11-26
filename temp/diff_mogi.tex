@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{tcolorbox}
 \usepackage{xcolor}
+\usepackage{multicol}
 
 % フォント設定
 \setCJKmainfont{Noto Sans JP}[Path=fonts/, UprightFont=NotoSansJP-Regular.ttf, BoldFont=NotoSansJP-Bold.ttf]
@@ -19,10 +20,10 @@
 \begin{document}
 \section*{Theme: 微分積分とは？}
 
-みなさん、\textbf{”微分積分”}って聞いたことありますか？ 「難しそう」という感想を持つ人がほとんどだと思いますが、実はすごくシンプルで便利なツールなんですよ。
+\noindent みなさん、\textbf{”微分積分”}って聞いたことありますか？ 「難しそう」という感想を持つ人がほとんどだと思いますが、実はすごくシンプルで便利なツールなんですよ。
 
 
-まずは、復習から。\textbf{”変化の割合”}という言葉はきいたことあると思います。$\text{変化の割合}=\frac{\text{$y$の増加量}}{\text{$x$の増加量}}$とかいうやつです。具体例を用いながら思い出していきましょう。
+\noindent まずは、復習から。\textbf{”変化の割合”}という言葉はきいたことあると思います。$\text{変化の割合}=\frac{\text{$y$の増加量}}{\text{$x$の増加量}}$とかいうやつです。具体例を用いながら思い出していきましょう。
 
 
 \vspace{-1em}
@@ -34,26 +35,26 @@
 \noindent
 \makebox[\textwidth][l]{%
 \begin{minipage}[t]{0.65\textwidth}
-$y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。
+\noindent $y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。
 
 
-\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(2) - f(1)}{2 - 1} =\dfrac{2^2 - 1^2}{2 - 1} = 3$\end{center}
-さて、ここからは文字にしていきます。文字にしたとたんにわからない人が急増するのでお気を付けを。
-\begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(x+h) - f(x)}{(x+h) - x} =\dfrac{f(x+h) - f(x)}{h}$\end{center}
-具体例では\textbf{「} $\boldsymbol{1 \rightarrow 2}$ \textbf{」}という変化でしたが、これを\textbf{「} $\boldsymbol{x \rightarrow x+h}$ \textbf{」}という変化にしてみました。グラフからよく確認しておいてください。
+\noindent \begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(2) - f(1)}{2 - 1} =\dfrac{2^2 - 1^2}{2 - 1} = 3$\end{center}
+\noindent さて、ここからは文字にしていきます。文字にしたとたんにわからない人が急増するのでお気を付けを。
+\noindent \begin{center}$\dfrac{\text{$y$の増加量}}{\text{$x$の増加量}} =\dfrac{f(x+h) - f(x)}{(x+h) - x} =\dfrac{f(x+h) - f(x)}{h}$\end{center}
+\noindent 具体例では\textbf{「} $\boldsymbol{1 \rightarrow 2}$ \textbf{」}という変化でしたが、これを\textbf{「} $\boldsymbol{x \rightarrow x+h}$ \textbf{」}という変化にしてみました。グラフからよく確認しておいてください。
 \end{minipage}
 \hspace{20cm}
 }%
 \par
 \vspace{1em}
 
-このタイミングで微分係数を求める公式（定義）を紹介することにします。
+\noindent このタイミングで微分係数を求める公式（定義）を紹介することにします。
 \begin{tcolorbox}[before upper={\setlength{\abovedisplayskip}{5pt}\setlength{\belowdisplayskip}{5pt}\setlength{\abovedisplayshortskip}{0pt}\setlength{\belowdisplayshortskip}{0pt}}, title={微分係数の求め方（定義）}]
 関数$f(x)$の微分係数$f'(x)$は以下のように定義される。\[ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \]
 \end{tcolorbox}
 
-\begin{center} \textbf{さっき作った式にすごく似ていることがわかりますね？}\end{center}
-さっきの図をでは、幅を$\boldsymbol{h}$としていたので、「\textbf{その幅をごくごく小さくすれば、瞬間の変化率がわかるんじゃね？」}という発想になります。実際にさっきの例で計算してみましょうか。
+\noindent {\centering\textbf{さっき作った式にすごく似ていることがわかりますね？}\par}
+\noindent さっきの図をでは、幅を$\boldsymbol{h}$としていたので、「\textbf{その幅をごくごく小さくすれば、瞬間の変化率がわかるんじゃね？」}という発想になります。実際にさっきの例で計算してみましょうか。
 \begin{align*}
     \begin{aligned}
     f'(x)      & = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \\
@@ -65,11 +66,32 @@ $y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化
     \end{aligned}
 \end{align*}
 
-よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の微分係数を求めろ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の微分係数」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。
-\textbf{これがとても便利なんですよ。}今回はこれで終わりですが、この分野は物理や数学以外にも、経済学や社会学でもよく使われるので、ぜひこれを機に微分積分を学んでみてください。少しだけ問題を解いて終わることとしましょう。
-\begin{center}
-\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hrule height 5pt \hfill}\quad\textbf{問題（教科書P.114問3）}\quad\textcolor{gray}{\leaders\hrule height 5pt \hfill}}
-\end{center}
+\noindent \\
+\noindent \par\noindent
+\noindent よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の\textbf{導関数}を求めろ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の\textbf{微分係数}」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。少しだけ単語が複雑ですが、問題を解くときにはあまり困らないので、あまり気にしないでおくことにしましょう。\\
+\noindent \textbf{これがとても便利なんですよ。}今回はこれで終わりですが、この分野は物理や数学以外にも、経済学や社会学でもよく使われるんですよ。では、少しだけ教科書の問題を解いて終わることとしましょう。\\
+
+
+\par\noindent
+\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hrule height 5pt \hfill}\quad\textbf{練習4, 5（教科書P.195,199）}\quad\textcolor{gray}{\leaders\hrule height 5pt \hfill}}
+\par
+
+\noindent
+\textbf{練習4}\quad 関数$f(x) = x^3+2$の$x=1$における微分係数$f'(1)$を求めよ。
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{練習5}\quad 導関数の定義に従って、次の関数の導関数を求めよ。
+\vspace{-1.5em}
+\begin{multicols}{2}
+\begin{enumerate}
+  \renewcommand{\labelenumi}{(\arabic{enumi})}
+  \item $f(x) = 3x^2$
+  \item $f(x) = -x^2$
+\end{enumerate}
+\end{multicols}
+\par
 \vspace{0.5em}
 
 

@@ -19,9 +19,9 @@ class Text(LaTeXElement):
         if self.bold:
             # LaTeXの特殊文字をエスケープしてから\textbfコマンドで囲む
             escaped_text = escape_latex_special_chars(self.text)
-            result = f"\\textbf{{{escaped_text}}}"
+            result = f"\\noindent \\textbf{{{escaped_text}}}"
         else:
-            result = self.text
+            result = f"\\noindent {self.text}"
         for child in self.children:
             result += "\n" + child.to_latex()
         return result
@@ -48,7 +48,7 @@ class Paragraph(LaTeXElement):
             text_content = f"\\textbf{{{escaped_text}}}"
         else:
             text_content = self.text
-        result = f"{text_content}\n\n"
+        result = f"\\noindent {text_content}\n\n"
         for child in self.children:
             result += child.to_latex() + "\n"
         return result
@@ -144,14 +144,14 @@ class Line(LaTeXElement):
         # テキスト領域の端まで線を引くレイアウト
         # \makebox[\textwidth] を使ってテキスト領域の幅に合わせる
         # テキストは中央に配置し、左右に線を引く
-        result = "\\begin{center}\n"
+        # center環境は上下に大きな余白を作るため、\noindentを使用
+        result = "\\par\\noindent\n"
         result += "\\makebox[\\textwidth][s]{"
         result += line_cmd
         result += f"\\quad\\textbf{{{escaped_text}}}\\quad"
         result += line_cmd
         result += "}\n"
-        result += "\\end{center}\n"
-        result += "\\vspace{0.5em}\n"  # 適切な間隔
+        result += "\\par\n"
         
         for child in self.children:
             result += child.to_latex() + "\n"

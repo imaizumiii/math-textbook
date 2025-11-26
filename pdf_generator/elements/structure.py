@@ -2,8 +2,28 @@
 ドキュメント構造要素
 """
 
-from typing import Optional
+from typing import Optional, List
 from .base import LaTeXElement
+from ..utils.encoding import escape_latex_special_chars
+
+
+class BlankSpace(LaTeXElement):
+    """
+    手書き用の空白スペース要素
+    
+    指定された高さの空白を作ります。
+    """
+    
+    def __init__(self, height: str):
+        """
+        Args:
+            height: 空白の高さ（例: "5cm", "50mm", "10em"）
+        """
+        super().__init__()
+        self.height = height
+    
+    def to_latex(self) -> str:
+        return f"\\vspace{{{self.height}}}\n"
 
 
 class Section(LaTeXElement):
@@ -100,4 +120,64 @@ class DrawingSpace(LaTeXElement):
         result += "}%\n"
         result += "\\par\n"  # 段落を終了して適切な間隔を確保
         result += "\\vspace{1em}\n"  # 追加の間隔を確保
+        return result
+
+
+class Exercise(LaTeXElement):
+    """
+    小問（練習問題）要素
+    
+    タイトルと問題の本文を持つ小問を表現します。
+    """
+    
+    def __init__(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1):
+        """
+        Args:
+            title: 小問のタイトル（例: "練習4"）
+            content: 問題の本文
+            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
+            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
+        """
+        super().__init__()
+        self.title = title
+        self.content = content
+        self.items = items or []
+        self.columns = columns
+    
+    def to_latex(self) -> str:
+        # タイトルと本文をエスケープ
+        escaped_title = escape_latex_special_chars(self.title)
+        escaped_content = escape_latex_special_chars(self.content)
+        
+        # タイトルを太字で表示し、間隔をあけて問題の本文を配置（横並び）
+        result = "\\noindent\n"
+        result += f"\\textbf{{{escaped_title}}}\\quad {escaped_content}\n"
+        
+        # 小問リストがある場合
+        if self.items:
+            # 余白を調整
+            result += "\\vspace{-1.5em}\n"
+
+            # 列数が2以上の場合はmulticol環境を使用
+            if self.columns > 1:
+                result += f"\\begin{{multicols}}{{{self.columns}}}\n"
+            
+            result += "\\begin{enumerate}\n"
+            # ラベルを (1), (2)... の形式に変更
+            result += "  \\renewcommand{\\labelenumi}{(\\arabic{enumi})}\n"
+            for item in self.items:
+                escaped_item = escape_latex_special_chars(item)
+                result += f"  \\item {escaped_item}\n"
+            result += "\\end{enumerate}\n"
+            
+            if self.columns > 1:
+                result += "\\end{multicols}\n"
+            
+        result += "\\par\n"
+        result += "\\vspace{0.5em}\n"  # 適切な間隔を確保
+        
+        # 子要素があれば追加
+        for child in self.children:
+            result += child.to_latex() + "\n"
+        
         return result

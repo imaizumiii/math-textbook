@@ -11,8 +11,8 @@ from pathlib import Path
 # 親ディレクトリをパスに追加
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from pdf_generator import PDFGenerator
 from pdf_generator.builder import DocumentBuilder
+from pdf_generator import PDFGenerator
 
 
 def main():
@@ -38,7 +38,8 @@ def main():
         # .set_font_file("C:/Windows/Fonts/msgothic.ttc", "MS Gothic")  # Windowsの場合
         # .set_font_file("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")  # Linuxの場合
         .set_font_file(
-            str(Path(__file__).parent.parent / "fonts" / "NotoSansJP-Regular.ttf"),
+            str(Path(__file__).parent.parent /
+                "fonts" / "NotoSansJP-Regular.ttf"),
             "Noto Sans JP",
         )  # ローカルファイル
         # 方法3: URLからフォントファイルをダウンロード（推奨）
@@ -88,7 +89,7 @@ def main():
             style=math_box_style,
         )
         .add_text(
-            r"\begin{center} \textbf{さっき作った式にすごく似ていることがわかりますね？}\end{center}"
+            r"{\centering\textbf{さっき作った式にすごく似ていることがわかりますね？}\par}"
         )
         .add_text(
             r"さっきの図をでは、幅を$\boldsymbol{h}$としていたので、「\textbf{その幅をごくごく小さくすれば、瞬間の変化率がわかるんじゃね？」}という発想になります。実際にさっきの例で計算してみましょうか。"
@@ -105,13 +106,30 @@ def main():
                 r"\end{aligned}",
             ]
         )
+        
+        .add_text(r"\\")
+        
+        .add_text(r"\par\noindent")
+        
         .add_text(
-            r"よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の微分係数を求めろ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の微分係数」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。"
+            r"よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の\textbf{導関数}を求めろ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の\textbf{微分係数}」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。少しだけ単語が複雑ですが、問題を解くときにはあまり困らないので、あまり気にしないでおくことにしましょう。\\"
         )
+
         .add_paragraph(
-            r"\textbf{これがとても便利なんですよ。}今回はこれで終わりですが、この分野は物理や数学以外にも、経済学や社会学でもよく使われるので、ぜひこれを機に微分積分を学んでみてください。少しだけ問題を解いて終わることとしましょう。"
+            r"\textbf{これがとても便利なんですよ。}今回はこれで終わりですが、この分野は物理や数学以外にも、経済学や社会学でもよく使われるんですよ。では、少しだけ教科書の問題を解いて終わることとしましょう。\\"
         )
-        .add_line("問題（教科書P.114問3）", line_thickness="5pt")
+        
+        .add_line("練習4, 5（教科書P.195,199）", line_thickness="5pt")
+
+        .add_exercise("練習4","関数$f(x) = x^3+2$の$x=1$における微分係数$f'(1)$を求めよ。")
+        
+        .add_exercise("練習5", "導関数の定義に従って、次の関数の導関数を求めよ。", items=[
+            "$f(x) = 3x^2$",
+            "$f(x) = -x^2$",
+        ], columns=2)
+        
+        # .add_line("")
+        
         .end_section()
         .build()
     )
