@@ -281,7 +281,7 @@ class DocumentBuilder:
         return self
     
     def add_divider(self, symbol: str = "*", spacing: str = "10em",
-                    vspace: str = "-1em", 
+                    vspace: str = "0.0em", 
                     vspace_before: Optional[str] = None,
                     vspace_after: Optional[str] = None):
         """
@@ -441,7 +441,7 @@ class SectionBuilder:
         return self
     
     def add_divider(self, symbol: str = "*", spacing: str = "10em",
-                    vspace: str = "-1em", 
+                    vspace: str = "0.0em", 
                     vspace_before: Optional[str] = None,
                     vspace_after: Optional[str] = None):
         """
@@ -626,7 +626,7 @@ class DrawingSpaceBuilder:
         return self
     
     def add_divider(self, symbol: str = "*", spacing: str = "10em",
-                    vspace: str = "-1em", 
+                    vspace: str = "0.0em", 
                     vspace_before: Optional[str] = None,
                     vspace_after: Optional[str] = None):
         """

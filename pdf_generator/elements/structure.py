@@ -147,11 +147,13 @@ class Exercise(LaTeXElement):
     def to_latex(self) -> str:
         # タイトルと本文をエスケープ
         escaped_title = escape_latex_special_chars(self.title)
-        escaped_content = escape_latex_special_chars(self.content)
+        # 修正: 本文（content）は数式を含むためエスケープしない
+        content = self.content
         
         # タイトルを太字で表示し、間隔をあけて問題の本文を配置（横並び）
         result = "\\noindent\n"
-        result += f"\\textbf{{{escaped_title}}}\\quad {escaped_content}\n"
+        # 修正: escaped_content ではなく content を使用
+        result += f"\\textbf{{{escaped_title}}}\\quad {content}\n"
         
         # 小問リストがある場合
         if self.items:
@@ -166,8 +168,8 @@ class Exercise(LaTeXElement):
             # ラベルを (1), (2)... の形式に変更
             result += "  \\renewcommand{\\labelenumi}{(\\arabic{enumi})}\n"
             for item in self.items:
-                escaped_item = escape_latex_special_chars(item)
-                result += f"  \\item {escaped_item}\n"
+                # 修正: アイテムも数式を含むためエスケープしない
+                result += f"  \\item {item}\n"
             result += "\\end{enumerate}\n"
             
             if self.columns > 1:

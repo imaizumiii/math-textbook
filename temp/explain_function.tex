@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{tcolorbox}
+\usepackage{xcolor}
 
 % フォント設定
 \setCJKmainfont{Noto Sans JP}[Path=fonts/, UprightFont=NotoSansJP-Regular.ttf, BoldFont=NotoSansJP-Bold.ttf]
@@ -19,35 +20,101 @@
 \section*{Theme: 関数$f(x)$とは？（中学生、高校生向け）}
 
 \noindent \quad \textbf{”関数”} という言葉がなじみ始めるのは、中学二年生の「一次関数」という単元ではないでしょうか。高校生なんかは、もっといろんなところでこの言葉を耳にしていますよね。ここでは、「関数」について小学生でも理解できるように簡単に説明していきますので、ぜひ見ていってください。
-\vspace{-1em}
+\vspace{0.0em}
 \begin{center}
 *\hspace{10em} *\hspace{10em} *
 \end{center}
-\vspace{-1em}
+\vspace{0.0em}
 
 \noindent \quad 「関数」という言葉ですが、数学以外でも、\textbf{プログラミングの世界で良く出現するんです。} そちらの世界の説明のほうがわかりやすいので、少しお借りすることとします。\\
-\vspace{3cm}
+\vspace{4cm}
 
 \noindent \quad 関数はよく、\textbf{「数字の工場」}と表現されます。何かを作るにはまず材料が必要ですよね。工場に入れる材料のことを、\textbf{変数}だとか\textbf{引数}、\textbf{入力値} とか言ったりもします。\\
 \noindent すると、工場は製品を作ってくれます。この出来上がった製品のことを、\textbf{出力値}とか\textbf{返り値}といいます。\\
 \noindent \quad それでは、なじみの深いであろう$\boldsymbol{y = 2x + 1}$という一次関数について見ていきましょうか。
-\vspace{-1em}
+\vspace{0.0em}
 \begin{center}
 *\hspace{10em} *\hspace{10em} *
 \end{center}
-\vspace{-1em}
+\vspace{0.0em}
 
 \noindent
 \makebox[\textwidth][l]{%
-\begin{minipage}[t]{0.5\textwidth}
+\begin{minipage}[t]{0.6\textwidth}
 \noindent 数学の世界では、\textbf{入力値を} $\boldsymbol{x}$、\textbf{出力値を} $\boldsymbol{y}$や $\boldsymbol{f(x)}$とすることが多いです。 
 \noindent せっかくなので中学生の皆さんも$f(x)$という書き方で見ていきましょうか。
-\noindent $f(x) = 2x + 1$
+\noindent $f(x) = 2x + 1$と数式で書くと、皆さんアレルギー反応が出てしまう可能性があるので、\begin{center}$f$(入力値) $= 2\times$(入力値) $+$ $1$\end{center} としましょうか。
+\noindent 見てわかるように、入力値に2を入れれば5が、3を入れれば7が出力されるというわけです。数式で書くと、
+\noindent \begin{center}$f(2) = 5$ \qquad $f(3) = 7$ \qquad $f(-1) = -1$\end{center}
+\noindent これを一目でわかるようにしたのが、\textbf{グラフ}なのです。（右図）
 \end{minipage}
 \hspace{2cm}
 }%
 \par
 \vspace{1em}
+
+\vspace{0.0em}
+\begin{center}
+*\hspace{10em} *\hspace{10em} *
+\end{center}
+\vspace{0.0em}
+
+\noindent 関数は英語で\textbf{function}というので、$f(x)$の$f$はそこから来てるんですね。
+\noindent ちなみに、教科書の関数の説明ではこのように書いてあります。\\
+\noindent \quad 「２つの変数$x$と$y$があって、$x$ の値を定めると、それにともなって $y$ の値がただ 1 つ定まるとき、$y$ は $x$ の関数であるという。」\\
+\noindent まぁ、正しいといえば正しいですが、ちょっとわかりにくいですね。慣れるまでは、\textbf{「数字の工場」}というイメージを持っておくことをお勧めします。裏面に少しだけ問題を載せておくので、いろんな関数をみていってください。
+\par\noindent
+\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hrule height 5pt \hfill}\quad\textbf{問題}\quad\textcolor{gray}{\leaders\hrule height 5pt \hfill}}
+\par
+
+\noindent
+\textbf{問題1}\quad 関数 $y = 5x $ について、$x=2$のときの$y$の値を求めよ。（比例）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題2}\quad 関数 $y =\dfrac{24}{x}$ について、$x=6$のときの$y$の値を求めよ。（反比例）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題3}\quad 関数 $y = -2x + 7$ について、$y=1$となるような$x$の値を求めよ。（一次関数）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題4}\quad 原点を通る二次関数について、$x=-2$のとき、$y=12$となるような関数を求めよ。（二次関数）\\
+\par
+\vspace{0.5em}
+
+\par\noindent
+\makebox[\textwidth][s]{\textcolor{gray}{\leaders\hbox to 0.5em{\hss\rule[-0.2pt]{0.4em}{1pt}\hss}\hfill}\quad\textbf{ここから高校}\quad\textcolor{gray}{\leaders\hbox to 0.5em{\hss\rule[-0.2pt]{0.4em}{1pt}\hss}\hfill}}
+\par
+
+\noindent
+\textbf{問題5}\quad 関数$x^3 -1$について、$y=26$となるような$x$の値を求めよ。（三次関数）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題6}\quad 関数 $y = \sqrt{x}$ について、$y=4$となるような$x$の値を求めよ。（平方根）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題7}\quad 関数 $y = 2^x$について、$x=5$のときの$y$の値を求めよ。（指数関数）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題8}\quad 関数 $y = \log_3 x$ について、$y=4$となるような$x$の値を求めよ。（対数関数）\\
+\par
+\vspace{0.5em}
+
+\noindent
+\textbf{問題9}\quad 関数$y = \sin x$について、$y = \dfrac{1}{2}$のときの$x$の値を求めよ。（三角関数）\\
+\par
+\vspace{0.5em}
 
 
 \end{document}
