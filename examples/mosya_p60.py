@@ -16,7 +16,7 @@ from pdf_generator.builder import DocumentBuilder
 
 
 def main():
-    output_name = "mosya_p60.pdf"
+    output_name = Path(__file__).stem + ".pdf"
     """メイン関数"""
     # PDFGeneratorの初期化
     print("PDFGeneratorを初期化しています...")

@@ -1,0 +1,76 @@
+\documentclass[a4paper]{article}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+% フォント設定
+\setCJKmainfont{Noto Sans JP}[Path=fonts/, UprightFont=NotoSansJP-Regular.ttf, BoldFont=NotoSansJP-Bold.ttf]
+
+\usepackage[top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.8}
+
+\begin{document}
+\section*{Theme: $\sin$, $\cos$とは？}
+
+\noindent 今回は、$\boldsymbol{\sin}$, $\boldsymbol{\cos}$とは何かについて説明します。$\sin$, $\cos$, $\tan$はまとめて\textbf{三角関数}と呼ばれます。$\tan$だけ、少し種類が違うので、今回は$\sin$と$\cos$のみ説明します。
+
+
+\noindent まずは、$\boldsymbol{\sin}$, $\boldsymbol{\cos}$\textbf{を使いたくなるシチュエーションを紹介したいと思います。}今回は物理分野の力学からお借りします。次の図を見てください。
+
+
+\vspace{4cm}
+
+\noindent 日常生活でもよく目にしそうな光景ですね。荷物を斜めに引っ張っている様子です。
+
+
+\noindent このとき、おそらく皆さんを悩ませる原因は、\textbf{紐が斜めであること}じゃないでしょうか。仮に紐がまっすぐだったら、どれくらいの力で引っ張っているかがすぐに計算できそうです。しかし、今回は紐が斜めなので、すぐには計算できません。そこで、頭のいい人はこう考えました。
+
+
+\noindent {\centering\textbf{「斜めの矢印を、縦と横に分けたらいいんじゃね？」}\par}
+
+
+\noindent 一応、中学の理科で\textbf{力の分解}なるものを習ったと思います。それを使って斜めの矢印を縦と横に分解するという発想になります。
+
+
+\noindent {\centering\textbf{そのときに使うものこそが、} $\boldsymbol{\sin}$ \textbf{と} $\boldsymbol{\cos}$ \textbf{なんです。}\par}
+
+
+\noindent 下の図を見てください。斜めに向いている力を縦と横に分解してみました。角度を$\boldsymbol{\theta}$という文字で表しています。
+
+
+\vspace{4cm}
+
+\noindent このとき、縦方向の力が$\boldsymbol{T \sin \theta}$、横方向の力が$\boldsymbol{T \cos \theta}$となります。
+
+
+\noindent 皆さんの頭の上についたハテナを一度無視して、$\boldsymbol{T}$ \textbf{の大きさを} $\boldsymbol{1}$ にしてみます。この\textbf{「１」}というのがミソなんですよ。
+
+
+\vspace{4cm}
+
+\noindent {\centering\textbf{$\boldsymbol{\sin\theta}$は縦方向の力、$\boldsymbol{\cos\theta}$は横方向の力}\par}
+
+
+\noindent このイメージをしっかり持つようにしてください。そうすると、皆さんが苦手な90度以上のときの三角関数もすぐに理解できるようになります。試しに90度の場合を考えてみましょう。
+
+
+\noindent
+\makebox[\textwidth][l]{%
+\begin{minipage}[t]{0.6\textwidth}
+\noindent 90度の場合、縦方向の力は0、横方向の力は1になります。aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+\end{minipage}
+\hspace{2cm}
+}%
+\par
+\vspace{1em}
+
+
+\end{document}

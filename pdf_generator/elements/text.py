@@ -24,7 +24,7 @@ class Text(LaTeXElement):
             result = f"\\noindent {self.text}"
         for child in self.children:
             result += "\n" + child.to_latex()
-        return result
+        return result + "\n\n"
     
     def process_resources(self, output_dir):
         result = {}
