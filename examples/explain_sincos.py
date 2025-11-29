@@ -68,11 +68,19 @@ def main():
         
         .add_text(r"{\centering\textbf{$\boldsymbol{\sin\theta}$は縦方向の力、$\boldsymbol{\cos\theta}$は横方向の力}\par}")
         
-        .add_text(r"このイメージをしっかり持つようにしてください。そうすると、皆さんが苦手な90度以上のときの三角関数もすぐに理解できるようになります。試しに90度の場合を考えてみましょう。")
+        .add_text(r"このイメージをしっかり持つようにしてください。そうすれば、皆さんが苦手な\textbf{90度以上のときの三角関数}もすぐに理解できるようになります。\\")
         
         .add_drawing_space(width="0.6\\textwidth", right_margin="2cm")
         
-        .add_text(r"90度の場合、縦方向の力は0、横方向の力は1になります。aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        .add_text(r"右の図は、$\theta = 90^\circ$のときです。横方向は矢印が伸びていないのが一目瞭然ですよね。なので、$\boldsymbol{\cos 90^\circ = 0}$となります。")
+        
+        .add_text(r"一方、縦方向の矢印はそのまま引っ張る力と同じになっていますよね？ひもを引っ張る力は「１」と設定していたので、$\boldsymbol{\sin 90^\circ = 1}$となります。\\")
+        
+        .add_text(r"いろんなパターンで確認していきましょう！次は$\theta = 150^\circ$のときでも考えてみましょうか。")
+        
+        .add_text(r"$\sin$の値はわかりますかね？$\sin$は縦方向の力だったので、縦方向の矢印の長さを見ればいいですよね。すると、$\boldsymbol{\sin 150^\circ = \frac{1}{2}}$となります。")
+        
+        .add_text(r"次は$\cos$の値です。横方向の力が、運ぶ方向と逆に向いているのがわかりますか？逆に向いているということはつまり、\textbf{マイナスの値をとる}ということになります。よって、$\boldsymbol{\cos 150^\circ = -\frac{\sqrt{3}}{2}}$となります。")
         
         .end_drawing_space()        
         
