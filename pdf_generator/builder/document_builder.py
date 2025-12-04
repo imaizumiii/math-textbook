@@ -500,9 +500,17 @@ class SectionBuilder:
         self.section.add(eq)
         return self
     
-    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False):
-        """複数行の数式を追加"""
-        align = Align(equations, label=label, numbered=numbered)
+    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False, vspace: Optional[str] = None):
+        """
+        複数行の数式を追加
+        
+        Args:
+            equations: 数式のリスト
+            label: ラベル
+            numbered: 番号を振るかどうか
+            vspace: 直前の余白調整（例: "-1em", "5pt"）
+        """
+        align = Align(equations, label=label, numbered=numbered, vspace=vspace)
         self.section.add(align)
         return self
     
@@ -682,9 +690,17 @@ class DrawingSpaceBuilder:
         self.drawing_space.add(eq)
         return self
     
-    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False):
-        """複数行の数式を追加"""
-        align = Align(equations, label=label, numbered=numbered)
+    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False, vspace: Optional[str] = None):
+        """
+        複数行の数式を追加
+        
+        Args:
+            equations: 数式のリスト
+            label: ラベル
+            numbered: 番号を振るかどうか
+            vspace: 直前の余白調整（例: "-1em", "5pt"）
+        """
+        align = Align(equations, label=label, numbered=numbered, vspace=vspace)
         self.drawing_space.add(align)
         return self
     

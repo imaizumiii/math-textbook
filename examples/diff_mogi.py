@@ -62,7 +62,7 @@ def main():
         )
         .add_divider()
         # 具体例　グラフ挿入
-        .add_drawing_space(width="0.65\\textwidth", right_margin="20cm")
+        .add_drawing_space(width="0.5\\textwidth", right_margin="2cm")
         .add_paragraph(
             r"$y=x^2$というグラフを考えてみましょう。$x=1$から$x=2$に変化したときの変化の割合は、次のような式から求められます。"
         )
@@ -81,11 +81,11 @@ def main():
         .end_drawing_space()
         # 公式紹介
         .add_text(
-            "このタイミングで微分係数を求める公式（定義）を紹介することにします。"
+            "このタイミングで導関数を求める公式（定義）を紹介することにします。"
         )
         .add_textbox(
-            title="微分係数の求め方（定義）",
-            content=r"関数$f(x)$の微分係数$f'(x)$は以下のように定義される。\[ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \]",
+            title="導関数の求め方（定義）",
+            content=r"関数$f(x)$の導関数$f'(x)$は以下のように定義される。\[ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \]",
             style=math_box_style,
         )
         .add_text(
@@ -101,15 +101,15 @@ def main():
                 r"           & = \lim_{h \to 0} \frac{(x+h)^2 - x^2}{h} \\",
                 r"           & = \lim_{h \to 0} \frac{x^2 + 2xh + h^2 - x^2}{h} \\",
                 r"           & = \lim_{h \to 0} \frac{2xh + h^2}{h} \\",
-                r"           & = \lim_{h \to 0} (2x + h) \\",
-                r"           & = 2x",
+                r"           & = \lim_{h \to 0} (2x + h) \quad = \quad 2x",
                 r"\end{aligned}",
-            ]
+            ],
+            vspace="-2em"
         )
         
         
         .add_text(
-            r"よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の\textbf{導関数}を求めよ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の\textbf{微分係数}を求めよ」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。少しだけ単語が複雑ですが、問題を解くときにはあまり困らないので、あまり気にしないでおくことにしましょう。\\"
+            r"よって、$\boldsymbol{f'(x) = 2x}$となります。実際に、「$f(x) = x^2$の\textbf{導関数}を求めよ」と言われたら、これが答えになります。「$x=2$における$f(x) = x^2$の\textbf{微分係数}を求めよ」とか言われたら、$x=2$を代入して、$f'(2) = 4$が答えになります。少しだけ単語が複雑ですが、問題を解くときにはあまり困らないので、あまり気にしないでおくことにしましょう。"
         )
 
         .add_paragraph(

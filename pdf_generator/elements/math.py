@@ -31,15 +31,20 @@ class Equation(LaTeXElement):
 class Align(LaTeXElement):
     """複数行の数式（align環境）"""
     
-    def __init__(self, equations: List[str], label: Optional[str] = None, numbered: bool = True):
+    def __init__(self, equations: List[str], label: Optional[str] = None, numbered: bool = True, vspace: Optional[str] = None):
         super().__init__()
         self.equations = equations
         self.label = label
         self.numbered = numbered
+        self.vspace = vspace
     
     def to_latex(self) -> str:
         env_name = "align" if self.numbered else "align*"
-        result = f"\\begin{{{env_name}}}\n"
+        result = ""
+        if self.vspace:
+            result += f"\\vspace{{{self.vspace}}}\n"
+            
+        result += f"\\begin{{{env_name}}}\n"
         for eq in self.equations:
             result += f"    {eq}\n"
         if self.label:
