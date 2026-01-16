@@ -5,7 +5,7 @@
 from typing import Optional, Dict, List, Union, Any
 from ..core.document import Document
 from ..elements.structure import Section, DrawingSpace, Exercise, BlankSpace
-from ..elements.graphics import Image
+from ..elements.graphics import Image, TikZ
 from ..elements.boxes import TextBox, Note, Warning, Info
 from ..elements.text import Text, Paragraph, List as ListElement, Line, Divider
 from ..elements.math import Equation, Align
@@ -309,6 +309,29 @@ class DocumentBuilder:
         self.document.add(img)
         return self
     
+    def add_tikz(self, code: str, caption: Optional[str] = None, label: Optional[str] = None, 
+                 libraries: Optional[List[str]] = None, inline: bool = False):
+        """
+        TikZ図形を追加
+        
+        Args:
+            code: TikZコード
+            caption: キャプション
+            label: ラベル
+            libraries: 必要なTikZライブラリのリスト
+            inline: インライン表示するかどうか
+        """
+        self.add_package("tikz")
+        if libraries:
+            for lib in libraries:
+                cmd = f"\\usetikzlibrary{{{lib}}}"
+                if cmd not in self.document.preamble_manager.custom_commands:
+                    self.document.preamble_manager.add_command(cmd)
+                    
+        tikz = TikZ(code, caption=caption, label=label, libraries=libraries, inline=inline)
+        self.document.add(tikz)
+        return self
+    
     def add_textbox(self, content: str, title: Optional[str] = None,
                    box_type: str = "tcolorbox", style: Optional[Dict[str, str]] = None):
         """テキストボックスを追加"""
@@ -355,23 +378,33 @@ class DocumentBuilder:
         return self
     
     def add_drawing_space(self, width: str = "0.7\\textwidth", 
-                         right_margin: str = "5cm") -> 'DrawingSpaceBuilder':
+                         right_margin: str = "5cm",
+                         margin_image: Optional[str] = None,
+                         margin_content: Optional[Any] = None) -> 'DrawingSpaceBuilder':
         """
         手書き用の余白を確保する領域を追加
         
         Args:
             width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
             right_margin: 右側の余白幅（例: "3cm", "5cm"）
+            margin_image: 右側の余白に表示する画像のパス（オプション）
+            margin_content: 右側の余白に表示するコンテンツ（TikZオブジェクトなど。margin_imageより優先度は低い）
         
         Returns:
             DrawingSpaceBuilder（メソッドチェーン用）
         
         Example:
-            .add_drawing_space(right_margin="5cm")
-                .add_paragraph("この部分だけ右側に余白があります")
+            .add_drawing_space(right_margin="5cm", margin_image="fig.png")
+                .add_paragraph("この部分だけ右側に余白（図）があります")
                 .end_drawing_space()
         """
-        drawing_space = DrawingSpace(width=width, right_margin=right_margin)
+        final_margin_content = margin_content
+        
+        if margin_image:
+            # マージン領域の幅に合わせて画像を表示
+            final_margin_content = Image(margin_image, width="1.0\\linewidth", inline=True)
+            
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin, margin_content=final_margin_content)
         self.document.add(drawing_space)
         return DrawingSpaceBuilder(self, drawing_space, parent_builder=self)
     
@@ -469,6 +502,20 @@ class SectionBuilder:
         self.section.add(img)
         return self
     
+    def add_tikz(self, code: str, caption: Optional[str] = None, label: Optional[str] = None, 
+                 libraries: Optional[List[str]] = None, inline: bool = False):
+        """TikZ図形を追加"""
+        self.doc_builder.add_package("tikz")
+        if libraries:
+            for lib in libraries:
+                cmd = f"\\usetikzlibrary{{{lib}}}"
+                if cmd not in self.doc_builder.document.preamble_manager.custom_commands:
+                    self.doc_builder.document.preamble_manager.add_command(cmd)
+
+        tikz = TikZ(code, caption=caption, label=label, libraries=libraries, inline=inline)
+        self.section.add(tikz)
+        return self
+    
     def add_textbox(self, content: str, title: Optional[str] = None,
                    box_type: str = "tcolorbox", style: Optional[Dict[str, str]] = None):
         """テキストボックスを追加"""
@@ -550,18 +597,28 @@ class SectionBuilder:
         return self
     
     def add_drawing_space(self, width: str = "0.7\\textwidth", 
-                         right_margin: str = "5cm") -> 'DrawingSpaceBuilder':
+                         right_margin: str = "5cm",
+                         margin_image: Optional[str] = None,
+                         margin_content: Optional[Any] = None) -> 'DrawingSpaceBuilder':
         """
         手書き用の余白を確保する領域を追加
         
         Args:
             width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
             right_margin: 右側の余白幅（例: "3cm", "5cm"）
+            margin_image: 右側の余白に表示する画像のパス（オプション）
+            margin_content: 右側の余白に表示するコンテンツ（TikZオブジェクトなど。margin_imageより優先度は低い）
         
         Returns:
             DrawingSpaceBuilder（メソッドチェーン用）
         """
-        drawing_space = DrawingSpace(width=width, right_margin=right_margin)
+        final_margin_content = margin_content
+        
+        if margin_image:
+            # マージン領域の幅に合わせて画像を表示
+            final_margin_content = Image(margin_image, width="1.0\\linewidth", inline=True)
+            
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin, margin_content=final_margin_content)
         self.section.add(drawing_space)
         return DrawingSpaceBuilder(self.doc_builder, drawing_space, parent_builder=self)
     
@@ -660,6 +717,25 @@ class DrawingSpaceBuilder:
         """画像を追加"""
         img = Image(image_path, caption=caption, width=width, label=label)
         self.drawing_space.add(img)
+        return self
+    
+    def add_tikz(self, code: str, caption: Optional[str] = None, label: Optional[str] = None, 
+                 libraries: Optional[List[str]] = None, inline: bool = True):
+        """
+        TikZ図形を追加
+        
+        Note:
+            DrawingSpace内ではfigure環境が使えないため、デフォルトでinline=True（非フロート）になります。
+        """
+        self.doc_builder.add_package("tikz")
+        if libraries:
+            for lib in libraries:
+                cmd = f"\\usetikzlibrary{{{lib}}}"
+                if cmd not in self.doc_builder.document.preamble_manager.custom_commands:
+                    self.doc_builder.document.preamble_manager.add_command(cmd)
+
+        tikz = TikZ(code, caption=caption, label=label, libraries=libraries, inline=inline)
+        self.drawing_space.add(tikz)
         return self
     
     def add_textbox(self, content: str, title: Optional[str] = None,

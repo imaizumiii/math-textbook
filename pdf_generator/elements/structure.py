@@ -2,7 +2,8 @@
 ドキュメント構造要素
 """
 
-from typing import Optional, List
+from typing import Optional, List, Union
+from pathlib import Path
 from .base import LaTeXElement
 from ..utils.encoding import escape_latex_special_chars
 
@@ -97,29 +98,57 @@ class DrawingSpace(LaTeXElement):
     右側に手書き用の余白が確保されます。
     """
     
-    def __init__(self, width: str = "0.7\\textwidth", right_margin: str = "5cm"):
+    def __init__(self, width: str = "0.7\\textwidth", right_margin: str = "5cm", 
+                 margin_content: Optional[Union[str, LaTeXElement]] = None):
         """
         Args:
             width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
             right_margin: 右側の余白幅（例: "3cm", "5cm"）
+            margin_content: 右側の余白に表示するコンテンツ（画像パスまたはLaTeXElement）
         """
         super().__init__()
         self.width = width
         self.right_margin = right_margin
+        self.margin_content = margin_content
     
     def to_latex(self) -> str:
-        # minipage環境を使用して幅を制限し、右側に余白を確保
-        # \makebox[\textwidth][l]{...}を使用して、minipageとhspaceを同じ行に配置
+        # 左側のコンテンツ用minipageと、右側のマージン用minipageを並べる
         result = "\\noindent\n"
-        result += f"\\makebox[\\textwidth][l]{{%\n"
+        
+        # 左側のminipage
         result += f"\\begin{{minipage}}[t]{{{self.width}}}\n"
         for child in self.children:
             result += child.to_latex() + "\n"
         result += f"\\end{{minipage}}\n"
-        result += f"\\hspace{{{self.right_margin}}}\n"
-        result += "}%\n"
-        result += "\\par\n"  # 段落を終了して適切な間隔を確保
+        
+        # 右側のマージン用minipage
+        # 左側のminipageとの間に少し隙間を開けるか、ぴったりくっつけるか
+        # ここではぴったりくっつけて、マージン幅を確保する
+        result += f"\\begin{{minipage}}[t]{{{self.right_margin}}}\n"
+        
+        if self.margin_content:
+            if isinstance(self.margin_content, str):
+                # 文字列の場合はそのままLaTeXとして出力（呼び出し側でImage要素などに変換されていることを想定）
+                # あるいは単純なテキストとして出力
+                result += f"{self.margin_content}\n"
+            elif hasattr(self.margin_content, 'to_latex'):
+                result += self.margin_content.to_latex()
+        else:
+            # コンテンツがない場合は、高さ確保のために空のボックスを置くか、単に何もしない
+            # minipageの幅は確保される
+            result += "\\null\n"
+            
+        result += f"\\end{{minipage}}\n"
+        
+        result += "\\par\n"  # 段落を終了
         result += "\\vspace{1em}\n"  # 追加の間隔を確保
+        return result
+
+    def process_resources(self, output_dir: Path) -> dict:
+        """リソース（画像など）を処理"""
+        result = super().process_resources(output_dir)
+        if self.margin_content and hasattr(self.margin_content, 'process_resources'):
+            result.update(self.margin_content.process_resources(output_dir))
         return result
 
 

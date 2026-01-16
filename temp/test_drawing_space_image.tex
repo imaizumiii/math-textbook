@@ -1,0 +1,66 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{CJKutf8}
+
+\begin{document}
+\begin{CJK}{UTF8}{min}
+\begin{center}
+{\Large\bfseries Drawing Space Image Test }\\[1em]
+\end{center}
+\vspace{2em}
+
+\section*{Drawing Space with Image Test}
+
+
+\noindent 以下は右側のマージンに画像を表示するテストです。
+
+
+\noindent
+\begin{minipage}[t]{0.6\textwidth}
+\noindent ここには本文が入ります。
+
+
+\noindent 右側に赤い正方形の画像が表示されているはずです。
+
+
+\noindent
+\textbf{練習問題}\quad 右の図は何色ですか？
+\par
+\vspace{0.5em}
+
+\end{minipage}
+\begin{minipage}[t]{5cm}
+{\centering
+\includegraphics[width=1.0\linewidth]{images/test_margin_img.png}
+\par}
+\end{minipage}
+\par
+\vspace{1em}
+
+\noindent 次のセクションは通常のDrawingSpace（画像なし）です。
+
+
+\noindent
+\begin{minipage}[t]{0.6\textwidth}
+\noindent ここには画像がありません。
+
+
+\noindent 右側は空白です。
+
+
+\end{minipage}
+\begin{minipage}[t]{5cm}
+\null
+\end{minipage}
+\par
+\vspace{1em}
+
+\end{CJK}
+\end{document}

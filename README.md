@@ -1,15 +1,14 @@
-# PDF Generator
+# Math Textbook Generator
 
-PythonとLaTeXを連携してPDFを自動生成するライブラリです。**Pythonコードから直接LaTeXドキュメントを構築**できるため、テンプレートファイルへの依存を最小限に抑えられます。
+PythonとLaTeXを連携して、高品質な数学テキスト、問題集、レポートを自動生成するライブラリです。**Pythonコードから直接LaTeXドキュメントを構築**できるため、テンプレートファイルへの依存を最小限に抑えられます。
 
 ## 特徴
 
+- **数学テキスト作成に特化**: 練習問題、解答スペース、図形配置などの専用機能を提供
 - **Python中心の設計**: LaTeXテンプレートを編集せず、Pythonコードでドキュメントを構築
-- **ビルダーパターン**: 流れるようなAPIでドキュメントを構築
-- **拡張性**: 新しい要素クラスを簡単に追加可能
-- **型安全**: メソッドチェーンで構造を明確に定義
-- **柔軟性**: JSON設定ファイルによる柔軟な設定管理
-- **エラーハンドリング**: 詳細なエラーメッセージと例外処理
+- **ビルダーパターン**: 流れるようなAPIで直感的にドキュメントを記述
+- **自動リソース管理**: フォントのダウンロードや画像の配置を自動化
+- **柔軟なレイアウト**: `DrawingSpace`により解説と手書き用スペースを並列配置
 
 ## インストール
 
@@ -28,215 +27,108 @@ pip install -r requirements.txt
 ```
 math-textbook/
 ├── pdf_generator/              # メインパッケージ
-│   ├── __init__.py            # パブリックAPIのエクスポート
-│   │
-│   ├── core/                  # コア機能
-│   │   ├── __init__.py
-│   │   ├── generator.py       # PDFGenerator（メインクラス）
-│   │   └── document.py        # Documentクラス（ドキュメント全体を管理）
-│   │
+│   ├── core/                  # コア機能 (Generator, Document)
 │   ├── elements/              # LaTeX要素クラス群
-│   │   ├── __init__.py
-│   │   ├── base.py            # LaTeXElement基底クラス
-│   │   ├── text.py            # Text, Paragraph, List
-│   │   ├── math.py            # Equation, Align
-│   │   ├── graphics.py        # Image, Figure
-│   │   ├── boxes.py           # TextBox, Note, Warning, Info
-│   │   ├── structure.py       # Section, Chapter, TableOfContents
-│   │   └── tables.py          # Table
-│   │
-│   ├── builder/               # ビルダーパターン実装
-│   │   ├── __init__.py
-│   │   └── document_builder.py # DocumentBuilder, SectionBuilder
-│   │
-│   ├── renderer/              # LaTeXレンダリング
-│   │   ├── __init__.py
-│   │   ├── latex_renderer.py  # LaTeXコード生成
-│   │   └── preamble.py         # プリアンブル管理
-│   │
-│   ├── config/                # 設定管理
-│   │   ├── __init__.py
-│   │   └── config_manager.py  # 設定読み込み・管理
-│   │
-│   ├── utils/                 # ユーティリティ
-│   │   ├── __init__.py
-│   │   ├── file_utils.py      # ファイル操作
-│   │   └── encoding.py        # エンコーディング処理
-│   │
-│   └── compiler.py            # LaTeXコンパイラ
+│   │   ├── text.py            # テキスト要素
+│   │   ├── math.py            # 数式要素 (Equation, Align)
+│   │   ├── structure.py       # 構造要素 (Section, Exercise, DrawingSpace)
+│   │   ├── boxes.py           # テキストボックス要素
+│   │   └── ...
+│   ├── builder/               # ビルダーパターン実装 (DocumentBuilder)
+│   └── renderer/              # LaTeXレンダリング
 │
 ├── config/                    # 設定ファイル
-│   ├── default.json
-│   └── schema.json
-│
 ├── examples/                  # 使用例
-│   ├── builder_example.py     # Builderパターンの例（推奨）
-│   └── usage_example.py       # レガシーAPIの例
-│
-├── templates/                 # テンプレート（レガシー、オプション）
-│   └── report.tex
+│   ├── diff_mogi.py           # 模試・プリント作成の例（推奨）
+│   ├── explain_function.py    # 関数の解説作成の例
+│   └── ...
 │
 ├── output/                    # PDF出力先
-├── temp/                      # 一時ファイル
-│
-├── requirements.txt
-└── README.md
+└── requirements.txt
 ```
 
 ## 基本的な使い方
 
-### 1. 簡単な例
+### 数学プリントの作成例
 
 ```python
+import sys
+from pathlib import Path
 from pdf_generator import PDFGenerator, DocumentBuilder
 
-# PDFGeneratorを初期化
-generator = PDFGenerator()
-
-# DocumentBuilderでドキュメントを構築
-doc = (DocumentBuilder("タイトル", "著者名", "2024年1月1日")
+def main():
+    generator = PDFGenerator()
     
-    # セクションを追加
-    .add_section("はじめに")
-        .add_text("テキストを追加")
-        .add_equation(r"E = mc^2")
-        .end_section()
-    
-    .build())
-
-# PDFを生成
-pdf_path = generator.generate(doc, output_name="output.pdf")
-print(f"PDFが生成されました: {pdf_path}")
-```
-
-### 2. より詳細な例
-
-```python
-from pdf_generator import PDFGenerator, DocumentBuilder
-
-generator = PDFGenerator()
-
-doc = (DocumentBuilder("数学レポート", "あなたの名前", "2024年1月1日")
-    
-    # セクション1: はじめに
-    .add_section("はじめに")
-        .add_text("このレポートでは、以下の内容について説明します。")
-        .add_list([
-            "PythonによるLaTeX生成",
-            "図の挿入方法",
-            "テキストボックスの使用方法"
-        ], ordered=True)
-        .end_section()
-    
-    # セクション2: 計算結果
-    .add_section("計算結果")
-        .add_text("Pythonで計算された円周率を数式として表示します。")
-        .add_equation(r"\pi \approx \mathbf{3.141593}")
-        .end_section()
-    
-    # セクション3: 図の挿入
-    .add_section("図表")
-        .add_image(
-            image_path="path/to/image.png",
-            caption="関数のグラフ",
-            width="0.6",
-            label="fig:graph1"
+    doc = (DocumentBuilder("微分積分入門", "数学 太郎")
+        # フォント設定（URLから自動ダウンロードして設定）
+        .set_font_from_url(
+            "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.ttf",
+            "Noto Sans JP"
         )
+        
+        .add_section("微分の基礎")
+            .add_paragraph("導関数の定義は以下の通りです。")
+            
+            # 定義などの重要なポイントをボックスで表示
+            .add_textbox(
+                title="導関数の定義",
+                content=r"f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}"
+            )
+            
+            # 解説と余白を確保するスペース
+            .add_drawing_space(width="0.6\\textwidth", right_margin="5cm")
+                .add_text("この定義式に基づいて計算を行います。")
+                .add_equation(r"f(x) = x^2")
+                .add_align([
+                    r"f'(x) &= \lim_{h \to 0} \frac{(x+h)^2 - x^2}{h} \\",
+                    r"      &= \lim_{h \to 0} (2x + h) = 2x"
+                ])
+            .end_drawing_space()
+            
+            # 練習問題の追加
+            .add_exercise("練習1", "次の関数を微分せよ。", items=[
+                r"f(x) = x^3",
+                r"f(x) = \sin x",
+                r"f(x) = e^x"
+            ], columns=2)  # 2列で表示
+            
         .end_section()
-    
-    # セクション4: テキストボックス
-    .add_section("補足説明")
-        .add_note("この結果は実験的に確認されました。")
-        .add_warning("数値は近似値です。")
-        .add_info("詳細は参考文献を参照してください。")
-        .end_section()
-    
-    .build())
+        .build())
 
-# PDFを生成
-pdf_path = generator.generate(doc, output_name="math_report.pdf")
+    # PDF生成
+    generator.generate(doc, output_name="math_print.pdf")
+
+if __name__ == "__main__":
+    main()
 ```
 
-### 3. 実行
+## DocumentBuilder API
 
-```bash
-python examples/builder_example.py
-```
+ドキュメント構築のための主要なメソッドです。
 
-## 利用可能な要素
+### ドキュメント設定
+- `.set_font_from_url(url, name)` - フォントを自動ダウンロードして設定
+- `.set_font_file(path, name)` - ローカルのフォントファイルを設定
+- `.set_margins(top, bottom, left, right)` - 余白の設定
 
-### テキスト要素
+### コンテンツ追加
+- `.add_section(title)` - セクションの開始（SectionBuilderを返す）
+- `.add_paragraph(text)` - 段落の追加
+- `.add_equation(latex_str)` - 数式の追加
+- `.add_align([eq1, eq2])` - 複数行数式の追加
+- `.add_textbox(content, title)` - 装飾ボックスの追加
+- `.add_image(path, caption)` - 画像の追加
 
-- `Text(text)` - テキストを追加
-- `Paragraph(text)` - 段落を追加
-- `List(items, ordered=False)` - リストを追加
+### 数学テキスト特化機能
+- `.add_drawing_space(width, right_margin)` - 解説エリアと手書き用余白を作成
+- `.add_exercise(title, content, items, columns)` - 練習問題を追加
+- `.add_divider()` - 区切り線を追加
+- `.add_line(text)` - 見出し線を追加
+- `.add_note/warning/info(content)` - 各種アイコン付きボックスを追加
 
-### 数式要素
+## 設定ファイル (`config/default.json`)
 
-- `Equation(equation, inline=False, label=None)` - 数式を追加
-- `Align(equations, label=None)` - 複数行の数式を追加
-
-### 画像要素
-
-- `Image(image_path, caption=None, width="0.8", label=None)` - 画像を追加
-- `Figure(...)` - Imageのエイリアス
-
-### テキストボックス要素
-
-- `TextBox(content, title=None, box_type="tcolorbox", style=None)` - カスタムテキストボックス
-- `Note(content)` - 注意書きボックス（黄色）
-- `Warning(content)` - 警告ボックス（赤色）
-- `Info(content)` - 情報ボックス（青色）
-
-### 構造要素
-
-- `Section(title, level=1, label=None)` - セクションを追加
-- `Chapter(title, label=None)` - 章を追加（bookクラス用）
-- `TableOfContents()` - 目次を追加
-
-### テーブル要素
-
-- `Table(headers, rows, caption=None, label=None)` - テーブルを追加
-
-## DocumentBuilderのメソッド
-
-### DocumentBuilderのメソッド
-
-- `.set_font(font)` - フォントを設定（CJKutf8用: "min"=明朝体, "goth"=ゴシック体）
-- `.set_font_file(font_file, font_name=None)` - フォントファイルを設定（XeLaTeX/LuaLaTeX用）
-- `.set_font_from_url(url, font_name=None, fonts_dir=None)` - URLからフォントファイルをダウンロードして設定
-- `.set_margins(top=None, bottom=None, left=None, right=None)` - 余白を設定
-- `.add_package(package, options=None)` - LaTeXパッケージを追加
-- `.add_section(title, level=1, label=None)` - セクションを追加（SectionBuilderを返す）
-- `.add_text(text)` - テキストを追加
-- `.add_paragraph(text)` - 段落を追加
-- `.add_image(...)` - 画像を追加
-- `.add_textbox(...)` - テキストボックスを追加
-- `.add_note(content)` - 注意書きボックスを追加
-- `.add_warning(content)` - 警告ボックスを追加
-- `.add_info(content)` - 情報ボックスを追加
-- `.add_equation(...)` - 数式を追加
-- `.add_table(...)` - テーブルを追加
-- `.build()` - Documentオブジェクトを構築
-
-### SectionBuilderのメソッド
-
-- `.add_text(text)` - テキストを追加
-- `.add_paragraph(text)` - 段落を追加
-- `.add_image(...)` - 画像を追加
-- `.add_textbox(...)` - テキストボックスを追加
-- `.add_note(content)` - 注意書きを追加
-- `.add_warning(content)` - 警告を追加
-- `.add_info(content)` - 情報を追加
-- `.add_equation(...)` - 数式を追加
-- `.add_align(equations, label=None, numbered=True)` - 複数行の数式を追加
-- `.add_list(items, ordered=False)` - リストを追加
-- `.add_table(...)` - テーブルを追加
-- `.end_section()` - セクションを終了してDocumentBuilderに戻る
-
-## 設定ファイル
-
-設定は`config/default.json`で管理されます：
+出力ディレクトリやLaTeXエンジンの設定を行えます。
 
 ```json
 {
@@ -247,150 +139,21 @@ python examples/builder_example.py
   },
   "compilation": {
     "engine": "pdflatex",
-    "compile_times": 2,
-    "interaction_mode": "nonstopmode"
-  },
-  "file_management": {
-    "cleanup": true,
-    "keep_tex": false,
-    "keep_log": false
+    "compile_times": 2
   }
 }
 ```
 
-### 設定項目の説明
+## 実行方法
 
-#### directories
-- `output_dir`: PDF出力先ディレクトリ（デフォルト: `output`）
-- `temp_dir`: 一時ファイルの保存ディレクトリ（デフォルト: `temp`）
-
-#### compilation
-- `engine`: LaTeXエンジン（`pdflatex`, `xelatex`, `lualatex`）
-- `compile_times`: コンパイル回数（通常は2回）
-- `interaction_mode`: インタラクションモード（`nonstopmode`, `batchmode`など）
-
-#### file_management
-- `cleanup`: 中間ファイルを削除するか
-- `keep_tex`: `.tex`ファイルを残すか
-- `keep_log`: `.log`ファイルを残すか
-- `cleanup_extensions`: 削除する拡張子のリスト
-
-## フォントの設定
-
-フォントの設定には3つの方法があります：
-
-### 方法1: CJKutf8を使用（シンプル）
-
-```python
-doc = (DocumentBuilder("タイトル", "著者")
-    .set_font("goth")  # ゴシック体（"min"=明朝体）
-    .build())
-```
-
-### 方法2: フォントファイルを直接指定（推奨）
-
-```python
-doc = (DocumentBuilder("タイトル", "著者")
-    .set_font_file("fonts/NotoSansJP-Regular.ttf", "Noto Sans JP")
-    # またはシステムフォント
-    # .set_font_file("C:/Windows/Fonts/msgothic.ttc", "MS Gothic")
-    .build())
-```
-
-### 方法3: URLからダウンロード（最も便利）
-
-```python
-doc = (DocumentBuilder("タイトル", "著者")
-    .set_font_from_url(
-        "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.ttf",
-        "Noto Sans JP"
-    )
-    .build())
-```
-
-フォントファイルは自動的に`fonts/`ディレクトリにダウンロードされ、PDF生成時に`output/fonts/`にコピーされます。
-
-## 画像の処理
-
-画像ファイルは自動的に`output/images/`ディレクトリにコピーされ、相対パスに変換されます：
-
-```python
-doc = (DocumentBuilder("タイトル", "著者")
-    .add_section("図表")
-        .add_image("path/to/image.png", caption="説明")
-        .end_section()
-    .build())
-
-# 画像は自動的に output/images/image.png にコピーされる
-generator.generate(doc)
-```
-
-## エラーハンドリング
-
-すべてのエラーは例外として投げられます：
-
-- `FileNotFoundError`: 設定ファイルや画像ファイルが見つからない場合
-- `ValidationError`: 設定ファイルのバリデーションエラー
-- `RuntimeError`: LaTeXコンパイルエラー
-
-```python
-try:
-    pdf_path = generator.generate(doc, output_name="output.pdf")
-except FileNotFoundError as e:
-    print(f"ファイルが見つかりません: {e}")
-except RuntimeError as e:
-    print(f"コンパイルエラー: {e}")
-```
-
-## 拡張方法
-
-### カスタム要素の作成
-
-新しい要素クラスを作成するには、`LaTeXElement`を継承します：
-
-```python
-from pdf_generator.elements.base import LaTeXElement
-
-class CustomElement(LaTeXElement):
-    def __init__(self, content: str):
-        super().__init__()
-        self.content = content
-    
-    def to_latex(self) -> str:
-        return f"\\customcommand{{{self.content}}}\n"
-```
-
-### カスタムパッケージの追加
-
-```python
-doc = (DocumentBuilder("タイトル", "著者")
-    .add_package("tikz")
-    .add_package("babel", options="[english]")
-    .build())
-```
-
-## レガシーAPI（非推奨）
-
-旧バージョンのテンプレートベースのAPIも利用可能ですが、非推奨です：
-
-```python
-# 非推奨: テンプレートベースのAPI
-generator = PDFGenerator()
-pdf_path = generator.generate(
-    template_name="report",
-    variables={"title": "タイトル", "author": "著者"},
-    output_name="output.pdf"
-)
-```
-
-新しいプロジェクトでは`DocumentBuilder`を使用することを推奨します。
-
-## 使用例
-
-詳細な使用例は`examples/builder_example.py`を参照してください。
+付属のサンプルスクリプトを実行して動作を確認できます。
 
 ```bash
-python examples/builder_example.py
+# 模試風プリントの生成
+python examples/diff_mogi.py
+
+# 関数解説の生成
+python examples/explain_function.py
 ```
 
 ## ライセンス
