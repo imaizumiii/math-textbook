@@ -4,30 +4,36 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 from ..core.document import Document
-from ..elements.structure import Section, DrawingSpace, Exercise, BlankSpace
+from ..elements.structure import Section, DrawingSpace
 from ..elements.graphics import Image, TikZ
-from ..elements.boxes import TextBox, Note, Warning, Info
-from ..elements.text import Text, Paragraph, List as ListElement, Line, Divider
-from ..elements.math import Equation, Align
-from ..elements.tables import Table
+from ..elements.text import Line
+from .content_mixin import ContentAdderMixin
 
 
-class DocumentBuilder:
+class DocumentBuilder(ContentAdderMixin):
     """ドキュメントを構築するビルダークラス"""
-    
+
     def __init__(self, title: Optional[str] = None, author: str = "", date: Optional[str] = None):
         self.document = Document(title, author, date)
         self.current_section: Optional[Section] = None
-    
+
+    @property
+    def _container(self) -> Document:
+        return self.document
+
+    @property
+    def _doc_builder(self) -> DocumentBuilder:
+        return self
+
     def _add_line_to_container(self, container: Any, text: str,
                                line_style: str = "solid",
                                line_thickness: str = "0.4pt",
                                color: Optional[str] = None) -> None:
         """
         装飾線付きテキストをコンテナに追加する共通メソッド（例: ----解答----）
-        
+
         Args:
             container: 追加先のコンテナ（document, section, drawing_spaceなど）
             text: 中央に表示するテキスト
@@ -39,13 +45,11 @@ class DocumentBuilder:
             line_thickness: 線の太さ（例: "0.4pt", "1pt", "5pt"）
             color: 線の色（例: "gray", "grey", "black", "red"など。Noneの場合は黒）
         """
-        # 色が指定されている場合はxcolorパッケージを追加
         if color:
             self.add_package("xcolor")
-        line = Line(text, line_style=line_style, line_thickness=line_thickness,
-                    color=color)
+        line = Line(text, line_style=line_style, line_thickness=line_thickness, color=color)
         container.add(line)
-    
+
     def set_title(self, title: str) -> DocumentBuilder:
         """
         タイトルを設定
@@ -82,15 +86,15 @@ class DocumentBuilder:
     def set_font_file(self, font_file: str, font_name: Optional[str] = None) -> DocumentBuilder:
         """
         フォントファイルを設定（XeLaTeX/LuaLaTeX用）
-        
+
         Args:
             font_file: フォントファイルのパス（.ttf, .otfなど）
             font_name: フォント名（省略時はファイル名から自動生成）
-        
+
         Note:
             フォントファイルを指定すると、自動的にXeLaTeXまたはLuaLaTeXが使用されます。
             より安定したフォント表示が可能です。
-        
+
         Example:
             .set_font_file("C:/Windows/Fonts/msgothic.ttc", "MS Gothic")
             .set_font_file("fonts/NotoSansJP-Regular.ttf", "Noto Sans JP")
@@ -99,34 +103,32 @@ class DocumentBuilder:
         font_path = Path(font_file)
         if not font_path.exists():
             raise FileNotFoundError(f"フォントファイルが見つかりません: {font_file}")
-        
+
         self.document.font_file = str(font_path.absolute())
         self.document.font_name = font_name or font_path.stem
         return self
-    
+
     def set_font_from_url(self, url: str, font_name: Optional[str] = None,
-                         fonts_dir: Optional[str] = None) -> DocumentBuilder:
+                          fonts_dir: Optional[str] = None) -> DocumentBuilder:
         """
         URLからフォントファイルをダウンロードして設定
-        
+
         Args:
             url: フォントファイルのURL
             font_name: フォント名（省略時はファイル名から自動生成）
             fonts_dir: フォント保存先ディレクトリ（省略時はconfigから取得、デフォルト: fonts）
-        
+
         Returns:
             self（メソッドチェーン用）
-        
+
         Example:
             .set_font_from_url("https://example.com/fonts/NotoSansJP-Regular.ttf", "Noto Sans JP")
         """
         import urllib.request
         import urllib.parse
         from pathlib import Path
-        
-        # フォント保存先の決定
+
         if fonts_dir is None:
-            # 設定から取得（デフォルト: fonts）
             try:
                 from ..config import ConfigManager
                 config = ConfigManager()
@@ -134,17 +136,14 @@ class DocumentBuilder:
                 fonts_dir = config.get("directories.fonts_dir", "fonts")
             except Exception:
                 fonts_dir = "fonts"
-        
+
         fonts_path = Path(fonts_dir)
         fonts_path.mkdir(parents=True, exist_ok=True)
-        
-        # ファイル名をURLから取得
+
         parsed_url = urllib.parse.urlparse(url)
         filename = Path(parsed_url.path).name
-        
-        # ファイル名が取得できない場合や拡張子がない場合の処理
+
         if not filename or not filename.endswith(('.ttf', '.otf', '.ttc', '.woff', '.woff2')):
-            # Content-Dispositionヘッダーから取得を試みる
             try:
                 req = urllib.request.Request(url)
                 with urllib.request.urlopen(req) as response:
@@ -152,34 +151,30 @@ class DocumentBuilder:
                     if 'filename=' in content_disposition:
                         filename = content_disposition.split('filename=')[1].strip('"\'')
                     elif 'filename*=' in content_disposition:
-                        # RFC 5987形式の処理
                         filename_part = content_disposition.split('filename*=')[1].split(';')[0]
                         if filename_part.startswith("UTF-8''"):
                             filename = urllib.parse.unquote(filename_part[7:])
                         else:
                             filename = filename_part.strip('"\'')
             except Exception:
-                # デフォルト名を使用
                 filename = "font.ttf"
-        
+
         font_file_path = fonts_path / filename
-        
-        # ダウンロード
+
         print(f"フォントファイルをダウンロード中: {url}")
         try:
             urllib.request.urlretrieve(url, font_file_path)
             print(f"フォントファイルを保存しました: {font_file_path}")
         except Exception as e:
             raise RuntimeError(f"フォントファイルのダウンロードに失敗しました: {e}") from e
-        
-        # フォントを設定
+
         return self.set_font_file(str(font_file_path.absolute()), font_name)
-    
+
     def set_margins(self, top: Optional[str] = None, bottom: Optional[str] = None,
                     left: Optional[str] = None, right: Optional[str] = None) -> DocumentBuilder:
         """
         余白を設定
-        
+
         Args:
             top: 上余白（例: "2cm"）
             bottom: 下余白（例: "2cm"）
@@ -195,14 +190,14 @@ class DocumentBuilder:
         if right is not None:
             self.document.margins["right"] = right
         return self
-    
+
     def set_line_spacing(self, spacing: float) -> DocumentBuilder:
         """
         行間を設定
-        
+
         Args:
             spacing: 行間の倍率（例: 1.5 で1.5倍の行間、2.0 で2倍の行間）
-        
+
         Example:
             .set_line_spacing(1.5)  # 1.5倍の行間を設定
         """
@@ -210,16 +205,17 @@ class DocumentBuilder:
             raise ValueError("行間の倍率は0より大きい値である必要があります")
         self.document.line_spacing = spacing
         return self
-    
+
     def add_package(self, package: str, options: Optional[str] = None) -> DocumentBuilder:
         """パッケージを追加"""
         self.document.preamble_manager.add_package(package, options)
         return self
-    
-    def add_section(self, title: str, level: int = 1, label: Optional[str] = None, numbered: bool = False) -> SectionBuilder:
+
+    def add_section(self, title: str, level: int = 1, label: Optional[str] = None,
+                    numbered: bool = False) -> SectionBuilder:
         """
         セクションを追加
-        
+
         Args:
             title: セクションのタイトル
             level: セクションのレベル（1: section, 2: subsection, ...）
@@ -230,154 +226,6 @@ class DocumentBuilder:
         self.document.add(section)
         self.current_section = section
         return SectionBuilder(self, section)
-    
-    def add_text(self, text: str, bold: bool = False) -> DocumentBuilder:
-        """
-        テキストを追加
-
-        Args:
-            text: テキスト文字列
-            bold: 太字にするかどうか（デフォルト: False）
-        """
-        self.document.add(Text(text, bold=bold))
-        return self
-
-    def add_abstract(self, text: str, bold: bool = True, centered: bool = True) -> DocumentBuilder:
-        """
-        アブストラクト（概要）を追加
-
-        Args:
-            text: 表示するテキスト
-            bold: 太字にするかどうか（デフォルト: True）
-            centered: 中央寄せにするかどうか（デフォルト: True）
-
-        Note:
-            呼び出した位置（Document/Sectionの要素列）にそのまま挿入されます。
-        """
-        formatted_text = text
-        if bold:
-            formatted_text = f"\\textbf{{{formatted_text}}}"
-        if centered:
-            formatted_text = f"\\begin{{center}}\n{formatted_text}\n\\end{{center}}"
-        self.document.add(Paragraph(formatted_text))
-        return self
-
-    def add_paragraph(self, text: str, bold: bool = False) -> DocumentBuilder:
-        """
-        段落を追加
-
-        Args:
-            text: 段落のテキスト
-            bold: 太字にするかどうか（デフォルト: False）
-        """
-        self.document.add(Paragraph(text, bold=bold))
-        return self
-
-    def add_line(self, text: str,
-                 line_style: str = "solid",
-                 line_thickness: str = "5pt",
-                 color: Optional[str] = "gray") -> DocumentBuilder:
-        """装飾線付きテキストを追加（例: ----解答----）"""
-        self._add_line_to_container(self.document, text, line_style, line_thickness,
-                                    color)
-        return self
-
-    def add_divider(self, symbol: str = "*", spacing: str = "10em",
-                    vspace: str = "0.0em",
-                    vspace_before: Optional[str] = None,
-                    vspace_after: Optional[str] = None) -> DocumentBuilder:
-        """
-        軽い区切りを追加（例: *        *        *）
-        
-        Args:
-            symbol: 区切りに使用する記号（デフォルト: "*"）
-            spacing: 記号間の間隔（デフォルト: "10em"、例: "1em", "1.5em", "10em"など）
-            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
-            vspace_before: 上の余白（指定時はvspaceより優先）
-            vspace_after: 下の余白（指定時はvspaceより優先）
-        
-        Returns:
-            self（メソッドチェーン用）
-        """
-        self.document.add(Divider(symbol=symbol, spacing=spacing, vspace=vspace, 
-                                  vspace_before=vspace_before, 
-                                  vspace_after=vspace_after))
-        return self
-    
-    def add_image(self, image_path: str, caption: Optional[str] = None,
-                  width: str = "0.8", label: Optional[str] = None) -> DocumentBuilder:
-        """画像を追加"""
-        img = Image(image_path, caption=caption, width=width, label=label)
-        self.document.add(img)
-        return self
-
-    def add_tikz(self, code: str, caption: Optional[str] = None, label: Optional[str] = None,
-                 libraries: Optional[List[str]] = None, inline: bool = False) -> DocumentBuilder:
-        """
-        TikZ図形を追加
-        
-        Args:
-            code: TikZコード
-            caption: キャプション
-            label: ラベル
-            libraries: 必要なTikZライブラリのリスト
-            inline: インライン表示するかどうか
-        """
-        self.add_package("tikz")
-        if libraries:
-            for lib in libraries:
-                cmd = f"\\usetikzlibrary{{{lib}}}"
-                if cmd not in self.document.preamble_manager.custom_commands:
-                    self.document.preamble_manager.add_command(cmd)
-                    
-        tikz = TikZ(code, caption=caption, label=label, libraries=libraries, inline=inline)
-        self.document.add(tikz)
-        return self
-    
-    def add_textbox(self, content: str, title: Optional[str] = None,
-                    box_type: str = "tcolorbox", style: Optional[Dict[str, str]] = None) -> DocumentBuilder:
-        """テキストボックスを追加"""
-        box = TextBox(content, title=title, box_type=box_type, style=style)
-        self.document.add(box)
-        return self
-
-    def add_note(self, content: str) -> DocumentBuilder:
-        """注意書きを追加"""
-        self.document.add(Note(content))
-        return self
-
-    def add_warning(self, content: str) -> DocumentBuilder:
-        """警告を追加"""
-        self.document.add(Warning(content))
-        return self
-
-    def add_info(self, content: str) -> DocumentBuilder:
-        """情報を追加"""
-        self.document.add(Info(content))
-        return self
-
-    def add_equation(self, equation: str, inline: bool = False, label: Optional[str] = None) -> DocumentBuilder:
-        """数式を追加"""
-        eq = Equation(equation, inline=inline, label=label)
-        self.document.add(eq)
-        return self
-
-    def add_table(self, headers: List[str], rows: List[List[str]],
-                  caption: Optional[str] = None, label: Optional[str] = None) -> DocumentBuilder:
-        """テーブルを追加"""
-        table = Table(headers, rows, caption=caption, label=label)
-        self.document.add(table)
-        return self
-
-    def add_blank_space(self, height: str) -> DocumentBuilder:
-        """
-        手書き用の空白スペースを追加
-
-        Args:
-            height: 空白の高さ（例: "5cm", "50mm", "10em"）
-        """
-        self.document.add(BlankSpace(height))
-        return self
 
     def add_drawing_space(self, width: str = "0.7\\textwidth",
                           right_margin: str = "5cm",
@@ -385,218 +233,48 @@ class DocumentBuilder:
                           margin_content: Optional[Any] = None) -> DrawingSpaceBuilder:
         """
         手書き用の余白を確保する領域を追加
-        
+
         Args:
             width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
             right_margin: 右側の余白幅（例: "3cm", "5cm"）
             margin_image: 右側の余白に表示する画像のパス（オプション）
             margin_content: 右側の余白に表示するコンテンツ（TikZオブジェクトなど。margin_imageより優先度は低い）
-        
+
         Returns:
             DrawingSpaceBuilder（メソッドチェーン用）
-        
+
         Example:
             .add_drawing_space(right_margin="5cm", margin_image="fig.png")
                 .add_paragraph("この部分だけ右側に余白（図）があります")
                 .end_drawing_space()
         """
         final_margin_content = margin_content
-        
         if margin_image:
-            # マージン領域の幅に合わせて画像を表示
             final_margin_content = Image(margin_image, width="1.0\\linewidth", inline=True)
-            
-        drawing_space = DrawingSpace(width=width, right_margin=right_margin, margin_content=final_margin_content)
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin,
+                                     margin_content=final_margin_content)
         self.document.add(drawing_space)
         return DrawingSpaceBuilder(self, drawing_space, parent_builder=self)
-    
-    def add_exercise(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1) -> DocumentBuilder:
-        """
-        小問（練習問題）を追加
-
-        Args:
-            title: 小問のタイトル（例: "練習4"）
-            content: 問題の本文
-            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
-            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
-
-        Returns:
-            self（メソッドチェーン用）
-
-        Example:
-            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
-        """
-        if columns > 1:
-            self.add_package("multicol")
-        exercise = Exercise(title=title, content=content, items=items, columns=columns)
-        self.document.add(exercise)
-        return self
 
     def build(self) -> Document:
         """ドキュメントを構築"""
         return self.document
 
 
-class SectionBuilder:
+class SectionBuilder(ContentAdderMixin):
     """セクションを構築するビルダー"""
-    
+
     def __init__(self, doc_builder: DocumentBuilder, section: Section):
         self.doc_builder = doc_builder
         self.section = section
-    
-    def add_text(self, text: str, bold: bool = False) -> SectionBuilder:
-        """
-        テキストを追加
 
-        Args:
-            text: テキスト文字列
-            bold: 太字にするかどうか（デフォルト: False）
-        """
-        self.section.add(Text(text, bold=bold))
-        return self
+    @property
+    def _container(self) -> Section:
+        return self.section
 
-    def add_paragraph(self, text: str, bold: bool = False) -> SectionBuilder:
-        """
-        段落を追加
-
-        Args:
-            text: 段落のテキスト
-            bold: 太字にするかどうか（デフォルト: False）
-        """
-        self.section.add(Paragraph(text, bold=bold))
-        return self
-
-    def add_line(self, text: str,
-                 line_style: str = "solid",
-                 line_thickness: str = "5pt",
-                 color: Optional[str] = "gray") -> SectionBuilder:
-        """装飾線付きテキストを追加（例: ----解答----）"""
-        self.doc_builder._add_line_to_container(self.section, text, line_style, line_thickness,
-                                                color)
-        return self
-
-    def add_divider(self, symbol: str = "*", spacing: str = "10em",
-                    vspace: str = "0.0em",
-                    vspace_before: Optional[str] = None,
-                    vspace_after: Optional[str] = None) -> SectionBuilder:
-        """
-        軽い区切りを追加（例: *        *        *）
-        
-        Args:
-            symbol: 区切りに使用する記号（デフォルト: "*"）
-            spacing: 記号間の間隔（デフォルト: "10em"、例: "1em", "1.5em", "10em"など）
-            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
-            vspace_before: 上の余白（指定時はvspaceより優先）
-            vspace_after: 下の余白（指定時はvspaceより優先）
-        
-        Returns:
-            self（メソッドチェーン用）
-        """
-        self.section.add(Divider(symbol=symbol, spacing=spacing, vspace=vspace, 
-                                 vspace_before=vspace_before, 
-                                 vspace_after=vspace_after))
-        return self
-    
-    def add_image(self, image_path: str, caption: Optional[str] = None,
-                  width: str = "0.8", label: Optional[str] = None) -> SectionBuilder:
-        """画像を追加"""
-        img = Image(image_path, caption=caption, width=width, label=label)
-        self.section.add(img)
-        return self
-
-    def add_tikz(self, code: str, caption: Optional[str] = None, label: Optional[str] = None,
-                 libraries: Optional[List[str]] = None, inline: bool = False) -> SectionBuilder:
-        """TikZ図形を追加"""
-        self.doc_builder.add_package("tikz")
-        if libraries:
-            for lib in libraries:
-                cmd = f"\\usetikzlibrary{{{lib}}}"
-                if cmd not in self.doc_builder.document.preamble_manager.custom_commands:
-                    self.doc_builder.document.preamble_manager.add_command(cmd)
-
-        tikz = TikZ(code, caption=caption, label=label, libraries=libraries, inline=inline)
-        self.section.add(tikz)
-        return self
-    
-    def add_textbox(self, content: str, title: Optional[str] = None,
-                    box_type: str = "tcolorbox", style: Optional[Dict[str, str]] = None) -> SectionBuilder:
-        """テキストボックスを追加"""
-        box = TextBox(content, title=title, box_type=box_type, style=style)
-        self.section.add(box)
-        return self
-
-    def add_note(self, content: str) -> SectionBuilder:
-        """注意書きを追加"""
-        from ..elements.boxes import Note
-        self.section.add(Note(content))
-        return self
-
-    def add_warning(self, content: str) -> SectionBuilder:
-        """警告を追加"""
-        from ..elements.boxes import Warning
-        self.section.add(Warning(content))
-        return self
-
-    def add_info(self, content: str) -> SectionBuilder:
-        """情報を追加"""
-        from ..elements.boxes import Info
-        self.section.add(Info(content))
-        return self
-
-    def add_equation(self, equation: str, inline: bool = False, label: Optional[str] = None) -> SectionBuilder:
-        """数式を追加"""
-        eq = Equation(equation, inline=inline, label=label)
-        self.section.add(eq)
-        return self
-
-    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False, vspace: Optional[str] = None) -> SectionBuilder:
-        """
-        複数行の数式を追加
-        
-        Args:
-            equations: 数式のリスト
-            label: ラベル
-            numbered: 番号を振るかどうか
-            vspace: 直前の余白調整（例: "-1em", "5pt"）
-        """
-        align = Align(equations, label=label, numbered=numbered, vspace=vspace)
-        self.section.add(align)
-        return self
-    
-    def add_list(self, items: List[str], ordered: bool = False) -> SectionBuilder:
-        """リストを追加"""
-        lst = ListElement(items, ordered=ordered)
-        self.section.add(lst)
-        return self
-
-    def add_table(self, headers: List[str], rows: List[List[str]],
-                  caption: Optional[str] = None, label: Optional[str] = None) -> SectionBuilder:
-        """テーブルを追加"""
-        table = Table(headers, rows, caption=caption, label=label)
-        self.section.add(table)
-        return self
-
-    def add_abstract(self, text: str, bold: bool = True, centered: bool = True) -> SectionBuilder:
-        """
-        セクション内に概要を追加
-        """
-        formatted_text = text
-        if bold:
-            formatted_text = f"\\textbf{{{formatted_text}}}"
-        if centered:
-            formatted_text = f"\\begin{{center}}\n{formatted_text}\n\\end{{center}}"
-        self.section.add(Paragraph(formatted_text))
-        return self
-    
-    def add_blank_space(self, height: str) -> SectionBuilder:
-        """
-        手書き用の空白スペースを追加
-
-        Args:
-            height: 空白の高さ（例: "5cm", "50mm", "10em"）
-        """
-        self.section.add(BlankSpace(height))
-        return self
+    @property
+    def _doc_builder(self) -> DocumentBuilder:
+        return self.doc_builder
 
     def add_drawing_space(self, width: str = "0.7\\textwidth",
                           right_margin: str = "5cm",
@@ -615,45 +293,21 @@ class SectionBuilder:
             DrawingSpaceBuilder（メソッドチェーン用）
         """
         final_margin_content = margin_content
-        
         if margin_image:
-            # マージン領域の幅に合わせて画像を表示
             final_margin_content = Image(margin_image, width="1.0\\linewidth", inline=True)
-            
-        drawing_space = DrawingSpace(width=width, right_margin=right_margin, margin_content=final_margin_content)
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin,
+                                     margin_content=final_margin_content)
         self.section.add(drawing_space)
         return DrawingSpaceBuilder(self.doc_builder, drawing_space, parent_builder=self)
-    
-    def add_exercise(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1) -> SectionBuilder:
-        """
-        小問（練習問題）を追加
-
-        Args:
-            title: 小問のタイトル（例: "練習4"）
-            content: 問題の本文
-            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
-            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
-
-        Returns:
-            self（メソッドチェーン用）
-
-        Example:
-            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
-        """
-        if columns > 1:
-            self.doc_builder.add_package("multicol")
-        exercise = Exercise(title=title, content=content, items=items, columns=columns)
-        self.section.add(exercise)
-        return self
 
     def end_section(self) -> DocumentBuilder:
         """セクションを終了"""
         return self.doc_builder
 
 
-class DrawingSpaceBuilder:
+class DrawingSpaceBuilder(ContentAdderMixin):
     """DrawingSpaceを構築するビルダー"""
-    
+
     def __init__(self, doc_builder: DocumentBuilder, drawing_space: DrawingSpace,
                  parent_builder: Union[DocumentBuilder, SectionBuilder, None] = None):
         self.doc_builder = doc_builder
@@ -663,173 +317,33 @@ class DrawingSpaceBuilder:
             parent_builder if parent_builder is not None else doc_builder
         )
 
-    def add_text(self, text: str, bold: bool = False) -> DrawingSpaceBuilder:
-        """
-        テキストを追加
+    @property
+    def _container(self) -> DrawingSpace:
+        return self.drawing_space
 
-        Args:
-            text: テキスト文字列
-            bold: 太字にするかどうか（デフォルト: False）
-        """
-        self.drawing_space.add(Text(text, bold=bold))
-        return self
+    @property
+    def _doc_builder(self) -> DocumentBuilder:
+        return self.doc_builder
 
-    def add_paragraph(self, text: str, bold: bool = False) -> DrawingSpaceBuilder:
-        """
-        段落を追加
-
-        Args:
-            text: 段落のテキスト
-            bold: 太字にするかどうか（デフォルト: False）
-        """
-        self.drawing_space.add(Paragraph(text, bold=bold))
-        return self
-
-    def add_line(self, text: str,
-                 line_style: str = "solid",
-                 line_thickness: str = "5pt",
-                 color: Optional[str] = "gray") -> DrawingSpaceBuilder:
-        """装飾線付きテキストを追加（例: ----解答----）"""
-        self.doc_builder._add_line_to_container(self.drawing_space, text, line_style, line_thickness,
-                                                color)
-        return self
-
-    def add_divider(self, symbol: str = "*", spacing: str = "10em",
-                    vspace: str = "0.0em",
-                    vspace_before: Optional[str] = None,
-                    vspace_after: Optional[str] = None) -> DrawingSpaceBuilder:
-        """
-        軽い区切りを追加（例: *        *        *）
-        
-        Args:
-            symbol: 区切りに使用する記号（デフォルト: "*"）
-            spacing: 記号間の間隔（デフォルト: "10em"、例: "1em", "1.5em", "10em"など）
-            vspace: 上下の余白（デフォルト: "-1em"、負の値で余白を減らす）
-            vspace_before: 上の余白（指定時はvspaceより優先）
-            vspace_after: 下の余白（指定時はvspaceより優先）
-        
-        Returns:
-            self（メソッドチェーン用）
-        """
-        self.drawing_space.add(Divider(symbol=symbol, spacing=spacing, vspace=vspace, 
-                                       vspace_before=vspace_before, 
-                                       vspace_after=vspace_after))
-        return self
-    
-    def add_image(self, image_path: str, caption: Optional[str] = None,
-                  width: str = "0.8", label: Optional[str] = None) -> DrawingSpaceBuilder:
-        """画像を追加"""
-        img = Image(image_path, caption=caption, width=width, label=label)
-        self.drawing_space.add(img)
-        return self
-
-    def add_tikz(self, code: str, caption: Optional[str] = None, label: Optional[str] = None,
-                 libraries: Optional[List[str]] = None, inline: bool = True) -> DrawingSpaceBuilder:
+    def add_tikz(self, code: str, caption: Optional[str] = None,
+                 label: Optional[str] = None,
+                 libraries: Optional[list] = None, inline: bool = True) -> DrawingSpaceBuilder:
         """
         TikZ図形を追加
 
         Note:
             DrawingSpace内ではfigure環境が使えないため、デフォルトでinline=True（非フロート）になります。
         """
-        self.doc_builder.add_package("tikz")
+        self._doc_builder.add_package("tikz")
         if libraries:
             for lib in libraries:
                 cmd = f"\\usetikzlibrary{{{lib}}}"
-                if cmd not in self.doc_builder.document.preamble_manager.custom_commands:
-                    self.doc_builder.document.preamble_manager.add_command(cmd)
-
-        tikz = TikZ(code, caption=caption, label=label, libraries=libraries, inline=inline)
-        self.drawing_space.add(tikz)
-        return self
-    
-    def add_textbox(self, content: str, title: Optional[str] = None,
-                    box_type: str = "tcolorbox", style: Optional[Dict[str, str]] = None) -> DrawingSpaceBuilder:
-        """テキストボックスを追加"""
-        box = TextBox(content, title=title, box_type=box_type, style=style)
-        self.drawing_space.add(box)
-        return self
-
-    def add_note(self, content: str) -> DrawingSpaceBuilder:
-        """注意書きを追加"""
-        self.drawing_space.add(Note(content))
-        return self
-
-    def add_warning(self, content: str) -> DrawingSpaceBuilder:
-        """警告を追加"""
-        self.drawing_space.add(Warning(content))
-        return self
-
-    def add_info(self, content: str) -> DrawingSpaceBuilder:
-        """情報を追加"""
-        self.drawing_space.add(Info(content))
-        return self
-
-    def add_equation(self, equation: str, inline: bool = False, label: Optional[str] = None) -> DrawingSpaceBuilder:
-        """数式を追加"""
-        eq = Equation(equation, inline=inline, label=label)
-        self.drawing_space.add(eq)
-        return self
-
-    def add_align(self, equations: List[str], label: Optional[str] = None, numbered: bool = False, vspace: Optional[str] = None) -> DrawingSpaceBuilder:
-        """
-        複数行の数式を追加
-        
-        Args:
-            equations: 数式のリスト
-            label: ラベル
-            numbered: 番号を振るかどうか
-            vspace: 直前の余白調整（例: "-1em", "5pt"）
-        """
-        align = Align(equations, label=label, numbered=numbered, vspace=vspace)
-        self.drawing_space.add(align)
-        return self
-    
-    def add_list(self, items: List[str], ordered: bool = False) -> DrawingSpaceBuilder:
-        """リストを追加"""
-        lst = ListElement(items, ordered=ordered)
-        self.drawing_space.add(lst)
-        return self
-
-    def add_table(self, headers: List[str], rows: List[List[str]],
-                  caption: Optional[str] = None, label: Optional[str] = None) -> DrawingSpaceBuilder:
-        """テーブルを追加"""
-        table = Table(headers, rows, caption=caption, label=label)
-        self.drawing_space.add(table)
-        return self
-
-    def add_blank_space(self, height: str) -> DrawingSpaceBuilder:
-        """
-        手書き用の空白スペースを追加
-
-        Args:
-            height: 空白の高さ（例: "5cm", "50mm", "10em"）
-        """
-        self.drawing_space.add(BlankSpace(height))
-        return self
-
-    def add_exercise(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1) -> DrawingSpaceBuilder:
-        """
-        小問（練習問題）を追加
-
-        Args:
-            title: 小問のタイトル（例: "練習4"）
-            content: 問題の本文
-            items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
-            columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
-
-        Returns:
-            self（メソッドチェーン用）
-
-        Example:
-            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
-        """
-        if columns > 1:
-            self.doc_builder.add_package("multicol")
-        exercise = Exercise(title=title, content=content, items=items, columns=columns)
-        self.drawing_space.add(exercise)
+                if cmd not in self._doc_builder.document.preamble_manager.custom_commands:
+                    self._doc_builder.document.preamble_manager.add_command(cmd)
+        self.drawing_space.add(TikZ(code, caption=caption, label=label,
+                                    libraries=libraries, inline=inline))
         return self
 
     def end_drawing_space(self) -> Union[DocumentBuilder, SectionBuilder]:
         """DrawingSpaceを終了し、親ビルダーに戻る"""
         return self.parent_builder
-
