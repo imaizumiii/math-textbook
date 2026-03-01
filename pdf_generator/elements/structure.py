@@ -2,8 +2,10 @@
 ドキュメント構造要素
 """
 
-from typing import Optional, List, Union
+from __future__ import annotations
+
 from pathlib import Path
+from typing import Dict, List, Optional, Union
 from .base import LaTeXElement
 from ..utils.encoding import escape_latex_special_chars
 
@@ -144,7 +146,7 @@ class DrawingSpace(LaTeXElement):
         result += "\\vspace{1em}\n"  # 追加の間隔を確保
         return result
 
-    def process_resources(self, output_dir: Path) -> dict:
+    def process_resources(self, output_dir: Path) -> Dict[str, str]:
         """リソース（画像など）を処理"""
         result = super().process_resources(output_dir)
         if self.margin_content and hasattr(self.margin_content, 'process_resources'):

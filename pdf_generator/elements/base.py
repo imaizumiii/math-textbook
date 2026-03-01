@@ -2,31 +2,33 @@
 LaTeX要素の基底クラス
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pathlib import Path
 import shutil
 
 
 class LaTeXElement(ABC):
     """LaTeX要素の基底クラス"""
-    
+
     def __init__(self):
-        self.parent: Optional['LaTeXElement'] = None
-        self.children: List['LaTeXElement'] = []
-    
+        self.parent: Optional[LaTeXElement] = None
+        self.children: List[LaTeXElement] = []
+
     @abstractmethod
     def to_latex(self) -> str:
         """LaTeXコードに変換"""
         pass
-    
-    def add(self, element: 'LaTeXElement'):
+
+    def add(self, element: LaTeXElement) -> LaTeXElement:
         """子要素を追加"""
         element.parent = self
         self.children.append(element)
         return self
-    
-    def process_resources(self, output_dir: Path) -> dict:
+
+    def process_resources(self, output_dir: Path) -> Dict[str, str]:
         """
         リソース（画像など）を処理
         

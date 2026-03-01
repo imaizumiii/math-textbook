@@ -2,8 +2,10 @@
 画像・図表関連の要素
 """
 
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Optional, List
+from typing import Dict, List, Optional
 import shutil
 from .base import LaTeXElement
 
@@ -62,7 +64,7 @@ class Image(LaTeXElement):
             result += "\\end{figure}\n"
             return result
     
-    def process_resources(self, output_dir: Path) -> dict:
+    def process_resources(self, output_dir: Path) -> Dict[str, str]:
         """画像ファイルをコピー"""
         if not self.image_path.exists():
             raise FileNotFoundError(f"画像ファイルが見つかりません: {self.image_path}")

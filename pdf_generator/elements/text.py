@@ -2,7 +2,10 @@
 テキスト関連の要素
 """
 
-from typing import List, Optional
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Dict, List, Optional
 from .base import LaTeXElement
 from ..utils.encoding import escape_latex_special_chars
 
@@ -26,8 +29,8 @@ class Text(LaTeXElement):
             result += "\n" + child.to_latex()
         return result + "\n\n"
     
-    def process_resources(self, output_dir):
-        result = {}
+    def process_resources(self, output_dir: Path) -> Dict[str, str]:
+        result: Dict[str, str] = {}
         for child in self.children:
             result.update(child.process_resources(output_dir))
         return result
@@ -196,8 +199,8 @@ class Divider(LaTeXElement):
         
         return result
     
-    def process_resources(self, output_dir):
-        result = {}
+    def process_resources(self, output_dir: Path) -> Dict[str, str]:
+        result: Dict[str, str] = {}
         for child in self.children:
             result.update(child.process_resources(output_dir))
         return result

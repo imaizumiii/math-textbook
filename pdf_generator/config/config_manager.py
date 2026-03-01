@@ -2,10 +2,12 @@
 設定ファイルの読み込み、検証、管理を担当するモジュール
 """
 
+from __future__ import annotations
+
 import json
 import os
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Literal, Optional
 from jsonschema import validate, ValidationError, SchemaError
 from jsonschema.exceptions import best_match
 
@@ -91,16 +93,16 @@ class ConfigManager:
         
         return self.schema
     
-    def validate_config(self, config: Optional[Dict[str, Any]] = None) -> bool:
+    def validate_config(self, config: Optional[Dict[str, Any]] = None) -> Literal[True]:
         """
         設定をバリデーション
-        
+
         Args:
             config: 検証する設定辞書（Noneの場合はself.configを使用）
-        
+
         Returns:
-            bool: バリデーション成功時True
-        
+            Literal[True]: バリデーション成功時に常に True を返す
+
         Raises:
             ValidationError: バリデーションエラー時
             SchemaError: スキーマエラー時
@@ -178,18 +180,18 @@ class ConfigManager:
         
         return deep_merge(self.config, override_config)
     
-    def validate_template_config(self, template_name: str, 
-                                 variables: Dict[str, Any]) -> bool:
+    def validate_template_config(self, template_name: str,
+                                 variables: Dict[str, Any]) -> Literal[True]:
         """
         テンプレート用の変数が設定と一致するか検証
-        
+
         Args:
             template_name: テンプレート名
             variables: 提供された変数
-        
+
         Returns:
-            bool: 検証成功時True
-        
+            Literal[True]: 検証成功時に常に True を返す
+
         Raises:
             ValueError: 必須変数が不足している場合
         """
