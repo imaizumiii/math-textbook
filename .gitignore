@@ -1,0 +1,17 @@
+# 生成物
+temp/
+output/
+*.pdf
+*.aux
+*.log
+*.out
+*.synctex.gz
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# フォント（サイズが大きい・ダウンロードで取得可能）
+fonts/*.ttf
+fonts/*.otf
