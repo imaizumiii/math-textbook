@@ -7,7 +7,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar
 
-from ..elements.structure import Exercise, BlankSpace
+from ..elements.structure import Exercise, BlankSpace, DrawingSpace
 from ..elements.graphics import Image, TikZ
 from ..elements.boxes import TextBox, Note, Warning, Info
 from ..elements.text import Text, Paragraph, List as ListElement, Divider
@@ -15,7 +15,7 @@ from ..elements.math import Equation, Align
 from ..elements.tables import Table
 
 if TYPE_CHECKING:
-    from .document_builder import DocumentBuilder
+    from .document_builder import DocumentBuilder, DrawingSpaceBuilder
 
 _Self = TypeVar("_Self", bound="ContentAdderMixin")
 
@@ -201,6 +201,31 @@ class ContentAdderMixin(ABC):
             formatted_text = f"\\begin{{center}}\n{formatted_text}\n\\end{{center}}"
         self._container.add(Paragraph(formatted_text))
         return self
+
+    def add_drawing_space(self, width: str = "0.7\\textwidth",
+                          right_margin: str = "5cm",
+                          margin_image: Optional[str] = None,
+                          margin_content: Any = None) -> "DrawingSpaceBuilder":
+        """
+        手書き用の余白を確保する領域を追加
+
+        Args:
+            width: コンテンツの幅（例: "0.7\\textwidth", "10cm"）
+            right_margin: 右側の余白幅（例: "3cm", "5cm"）
+            margin_image: 右側の余白に表示する画像のパス（オプション）
+            margin_content: 右側の余白に表示するコンテンツ（TikZオブジェクトなど）
+
+        Returns:
+            DrawingSpaceBuilder（メソッドチェーン用）
+        """
+        from .document_builder import DrawingSpaceBuilder
+        final_margin_content = margin_content
+        if margin_image:
+            final_margin_content = Image(margin_image, width="1.0\\linewidth", inline=True)
+        drawing_space = DrawingSpace(width=width, right_margin=right_margin,
+                                     margin_content=final_margin_content)
+        self._container.add(drawing_space)
+        return DrawingSpaceBuilder(self._doc_builder, drawing_space, parent_builder=self)
 
     def add_exercise(self: _Self, title: str, content: str,
                      items: Optional[List[str]] = None, columns: int = 1) -> _Self:
