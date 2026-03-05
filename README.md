@@ -28,33 +28,39 @@ pip install -r requirements.txt
 ```
 math-textbook/
 ├── pdf_generator/              # メインパッケージ（py.typed付き）
-│   ├── core/                  # コア機能 (Generator, Document)
-│   ├── elements/              # LaTeX要素クラス群
-│   │   ├── base.py            # 基底クラス (LaTeXElement)
-│   │   ├── text.py            # テキスト要素 (Text, Paragraph, Line, Divider)
-│   │   ├── math.py            # 数式要素 (Equation, Align)
-│   │   ├── structure.py       # 構造要素 (Section, Exercise, DrawingSpace)
-│   │   ├── graphics.py        # 図形要素 (Image, TikZ)
-│   │   ├── boxes.py           # ボックス要素 (TextBox, Note, Warning, Info)
-│   │   └── tables.py          # テーブル要素 (Table)
-│   ├── builder/               # ビルダーパターン実装
-│   │   ├── content_mixin.py   # 共通メソッドMixin (ContentAdderMixin)
+│   ├── exceptions.py           # カスタム例外クラス群
+│   ├── core/                   # コア機能 (Generator, Document)
+│   ├── elements/               # LaTeX要素クラス群
+│   │   ├── base.py             # 基底クラス (LaTeXElement)
+│   │   ├── text.py             # テキスト要素 (Text, Paragraph, Line, Divider)
+│   │   ├── math.py             # 数式要素 (Equation, Align)
+│   │   ├── structure.py        # 構造要素 (Section, Exercise, DrawingSpace, BlankSpace)
+│   │   ├── graphics.py         # 図形要素 (Image, TikZ)
+│   │   ├── boxes.py            # ボックス要素 (TextBox, Note, Warning, Info)
+│   │   └── tables.py           # テーブル要素 (Table)
+│   ├── builder/                # ビルダーパターン実装
+│   │   ├── content_mixin.py    # 共通メソッドMixin (ContentAdderMixin)
 │   │   └── document_builder.py # DocumentBuilder / SectionBuilder / DrawingSpaceBuilder
-│   ├── renderer/              # LaTeXレンダリング
-│   ├── config/                # 設定管理 (ConfigManager)
-│   └── utils/                 # ユーティリティ
+│   ├── renderer/               # LaTeXレンダリング
+│   ├── config/                 # 設定管理 (ConfigManager)
+│   └── utils/                  # ユーティリティ
+│       ├── encoding.py         # 文字コード処理
+│       ├── file_utils.py       # ファイル操作
+│       └── font_utils.py       # フォント検索ユーティリティ
 │
-├── config/                    # 設定ファイル
-│   ├── default.json           # デフォルト設定
-│   └── schema.json            # 設定スキーマ
-├── examples/                  # 使用例
-│   ├── diff_mogi.py           # 模試・プリント作成の例（推奨）
-│   ├── explain_function.py    # 関数の解説作成の例
-│   ├── explain_sincos.py      # sin/cos 解説の例
-│   ├── mosya_p60.py           # 問題集ページの例
-│   └── template.py            # 基本テンプレートの例
+├── config/                     # 設定ファイル
+│   ├── default.json            # デフォルト設定
+│   └── schema.json             # 設定スキーマ
+├── examples/                   # 使用例
+│   ├── diff_mogi.py            # 模試・プリント作成の例（推奨）
+│   ├── explain_function.py     # 関数の解説作成の例
+│   ├── explain_sincos.py       # sin/cos 解説の例
+│   ├── mosya_p60.py            # 問題集ページの例
+│   ├── proofOfCLT.py           # 中心極限定理の証明ページの例
+│   ├── test_drawing_space_image.py  # DrawingSpace + 画像配置の例
+│   └── template.py             # 基本テンプレートの例
 │
-├── output/                    # PDF出力先
+├── output/                     # PDF出力先
 └── requirements.txt
 ```
 
@@ -84,7 +90,7 @@ def main():
                 content=r"f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}"
             )
 
-            # 解説と余白を確保するスペース
+            # 解説と手書き用スペースを並列配置
             .add_drawing_space(width="0.6\\textwidth", right_margin="5cm")
                 .add_text("この定義式に基づいて計算を行います。")
                 .add_equation(r"f(x) = x^2")
@@ -131,7 +137,6 @@ if __name__ == "__main__":
 | メソッド | 説明 |
 |---------|------|
 | `.add_section(title, level, numbered)` | セクション追加 → `SectionBuilder` を返す |
-| `.add_drawing_space(width, right_margin, margin_image)` | 手書きスペース追加 → `DrawingSpaceBuilder` を返す |
 | `.build()` | `Document` オブジェクトを返す |
 
 ### コンテンツ追加（全ビルダー共通）
@@ -150,7 +155,7 @@ if __name__ == "__main__":
 | `.add_list(items, ordered)` | 箇条書きリストを追加 |
 | `.add_table(headers, rows, caption)` | テーブルを追加 |
 | `.add_exercise(title, content, items, columns)` | 練習問題を追加 |
-| `.add_drawing_space(width, right_margin)` | 手書きスペースを追加 |
+| `.add_drawing_space(width, right_margin, margin_image)` | 手書きスペースを追加 → `DrawingSpaceBuilder` を返す |
 | `.add_blank_space(height)` | 空白スペースを追加 |
 | `.add_line(text, line_style, color)` | 装飾線付きテキストを追加 |
 | `.add_divider(symbol, spacing)` | 区切り記号を追加 |
@@ -161,6 +166,31 @@ if __name__ == "__main__":
 |---------|------|
 | `SectionBuilder.end_section()` | `DocumentBuilder` |
 | `DrawingSpaceBuilder.end_drawing_space()` | `DocumentBuilder` または `SectionBuilder` |
+
+## 例外クラス
+
+`pdf_generator.exceptions` モジュールで定義されたカスタム例外を使って、エラー原因を明示的に区別できます。
+
+| 例外クラス | 継承元 | 発生条件 |
+|-----------|--------|---------|
+| `MathTextbookError` | `Exception` | パッケージ共通の基底例外 |
+| `CompilationError` | `MathTextbookError` | LaTeX コンパイル失敗時 |
+| `FontNotFoundError` | `MathTextbookError`, `FileNotFoundError` | フォントファイルが見つからない時 |
+| `ConfigurationError` | `MathTextbookError` | 設定ファイルの読み込み・バリデーション失敗時 |
+| `DependencyError` | `MathTextbookError` | LaTeX エンジン等が見つからない時 |
+
+```python
+from pdf_generator import CompilationError, DependencyError
+
+try:
+    generator.generate(doc, output_name="output.pdf")
+except DependencyError as e:
+    print(f"LaTeXエンジンが見つかりません: {e}")
+except CompilationError as e:
+    print(f"コンパイルエラー: {e}")
+```
+
+> `FontNotFoundError` は `FileNotFoundError` を継承しているため、既存の `except FileNotFoundError` でもキャッチできます。
 
 ## 設定ファイル (`config/default.json`)
 
@@ -196,6 +226,12 @@ python examples/explain_sincos.py
 
 # 問題集ページの生成
 python examples/mosya_p60.py
+
+# 中心極限定理の証明ページの生成
+python examples/proofOfCLT.py
+
+# DrawingSpace + 画像配置のテスト
+python examples/test_drawing_space_image.py
 ```
 
 ## ライセンス
