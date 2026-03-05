@@ -10,6 +10,7 @@ from ..elements.structure import Section, DrawingSpace
 from ..elements.graphics import Image, TikZ
 from ..elements.text import Line
 from .content_mixin import ContentAdderMixin
+from ..exceptions import FontNotFoundError
 
 
 class DocumentBuilder(ContentAdderMixin):
@@ -102,7 +103,7 @@ class DocumentBuilder(ContentAdderMixin):
         from pathlib import Path
         font_path = Path(font_file)
         if not font_path.exists():
-            raise FileNotFoundError(f"フォントファイルが見つかりません: {font_file}")
+            raise FontNotFoundError(f"フォントファイルが見つかりません: {font_file}")
 
         self.document.font_file = str(font_path.absolute())
         self.document.font_name = font_name or font_path.stem
@@ -166,7 +167,7 @@ class DocumentBuilder(ContentAdderMixin):
             urllib.request.urlretrieve(url, font_file_path)
             print(f"フォントファイルを保存しました: {font_file_path}")
         except Exception as e:
-            raise RuntimeError(f"フォントファイルのダウンロードに失敗しました: {e}") from e
+            raise FontNotFoundError(f"フォントファイルのダウンロードに失敗しました: {e}") from e
 
         return self.set_font_file(str(font_file_path.absolute()), font_name)
 

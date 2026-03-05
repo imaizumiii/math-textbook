@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, Literal, Optional
 from jsonschema import validate, ValidationError, SchemaError
 from jsonschema.exceptions import best_match
+from ..exceptions import ConfigurationError
 
 
 class ConfigManager:
@@ -72,7 +73,7 @@ class ConfigManager:
     def load_config(self) -> Dict[str, Any]:
         """設定ファイルを読み込む"""
         if not self.config_path.exists():
-            raise FileNotFoundError(
+            raise ConfigurationError(
                 f"設定ファイルが見つかりません: {self.config_path}"
             )
         
@@ -128,14 +129,14 @@ class ConfigManager:
             # より詳細なエラーメッセージを提供
             best_error = best_match([e])
             error_path = " -> ".join(str(p) for p in e.absolute_path)
-            raise ValidationError(
+            raise ConfigurationError(
                 f"設定ファイルのバリデーションエラー:\n"
                 f"  パス: {error_path}\n"
                 f"  エラー: {best_error.message}\n"
                 f"  値: {e.instance}"
             ) from e
         except SchemaError as e:
-            raise SchemaError(f"スキーマファイルのエラー: {e.message}") from e
+            raise ConfigurationError(f"スキーマファイルのエラー: {e.message}") from e
     
     def get(self, key_path: str, default: Any = None) -> Any:
         """

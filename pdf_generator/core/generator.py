@@ -7,6 +7,7 @@ from typing import Optional
 from .document import Document
 from ..compiler import LaTeXCompiler
 from ..config import ConfigManager
+from ..exceptions import CompilationError
 
 
 class PDFGenerator:
@@ -111,7 +112,7 @@ class PDFGenerator:
         self.compiler.engine = original_engine
         
         if not success:
-            raise RuntimeError(f"PDFのコンパイルに失敗しました:\n{error_msg}")
+            raise CompilationError(f"PDFのコンパイルに失敗しました:\n{error_msg}")
         
         if error_msg:
             import warnings

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional, List, Tuple
 from .utils.encoding import safe_decode
 from .utils.file_utils import check_command_exists
+from .exceptions import CompilationError, DependencyError
 
 
 class LaTeXCompiler:
@@ -51,7 +52,7 @@ class LaTeXCompiler:
             FileNotFoundError: コマンドが見つからない場合
         """
         if not check_command_exists(self.engine):
-            raise FileNotFoundError(
+            raise DependencyError(
                 f"'{self.engine}'コマンドが見つかりません。\n"
                 f"  -> TeX Live/MiKTeXがインストールされ、PATHに追加されているか確認してください。"
             )
@@ -132,12 +133,12 @@ class LaTeXCompiler:
                     errors.append(error_msg)
                 
             except subprocess.TimeoutExpired:
-                raise RuntimeError(
+                raise CompilationError(
                     f"コンパイルがタイムアウトしました（60秒）。"
                     f"大きなファイルや複雑なLaTeXファイルの可能性があります。"
                 )
-            except Exception as e:
-                raise RuntimeError(f"コンパイル中に予期しないエラーが発生しました: {e}") from e
+            except (subprocess.SubprocessError, OSError) as e:
+                raise CompilationError(f"コンパイル中に予期しないエラーが発生しました: {e}") from e
         
         # PDFファイルが作成されたか確認
         pdf_file = work_dir / f"{tex_file_to_compile.stem}.pdf"
@@ -147,7 +148,7 @@ class LaTeXCompiler:
         
         if not pdf_file.exists():
             error_summary = "\n".join(errors) if errors else "不明なエラー"
-            raise RuntimeError(
+            raise CompilationError(
                 f"PDFファイルが作成されませんでした。\n"
                 f"コンパイルログ:\n{error_summary}"
             )

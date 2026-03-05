@@ -17,6 +17,15 @@ from .elements import (
     Table
 )
 
+# 例外クラス
+from .exceptions import (
+    MathTextbookError,
+    CompilationError,
+    FontNotFoundError,
+    ConfigurationError,
+    DependencyError,
+)
+
 # レガシーAPI（後方互換性のため）
 from .compiler import LaTeXCompiler
 from .config import ConfigManager
@@ -35,6 +44,12 @@ __all__ = [
     'TextBox', 'Note', 'Warning', 'Info',
     'Section', 'Chapter', 'TableOfContents',
     'Table',
+    # 例外クラス
+    'MathTextbookError',
+    'CompilationError',
+    'FontNotFoundError',
+    'ConfigurationError',
+    'DependencyError',
     # レガシーAPI
     'LaTeXCompiler',
     'ConfigManager',
