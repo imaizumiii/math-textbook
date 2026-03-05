@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow",
+    "requires_latex: marks tests that require LaTeX installation",
+]
+
+[tool.coverage.run]
+source = ["pdf_generator"]

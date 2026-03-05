@@ -11,6 +11,10 @@ output/
 __pycache__/
 *.pyc
 *.egg-info/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
 
 # フォント（サイズが大きい・ダウンロードで取得可能）
 fonts/*.ttf
