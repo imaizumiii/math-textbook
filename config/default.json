@@ -9,7 +9,9 @@
     "engine": "pdflatex",
     "compile_times": 2,
     "interaction_mode": "nonstopmode",
-    "extra_options": []
+    "extra_options": [],
+    "preview": true,
+    "preview_type": "os"
   },
   "file_management": {
     "cleanup": true,

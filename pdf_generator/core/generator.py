@@ -40,13 +40,14 @@ class PDFGenerator:
         if temp_dir:
             Path(temp_dir).mkdir(parents=True, exist_ok=True)
     
-    def generate(self, document: Document, output_name: Optional[str] = None) -> str:
+    def generate(self, document: Document, output_name: Optional[str] = None, preview: Optional[bool] = None) -> str:
         """
         DocumentからPDFを生成
         
         Args:
             document: Documentインスタンス
             output_name: 出力ファイル名（省略時は自動生成）
+            preview: 生成後にプレビューを表示するかどうか（Noneの場合は設定ファイルに従う）
         
         Returns:
             生成されたPDFファイルのパス
@@ -129,6 +130,15 @@ class PDFGenerator:
         elif not pdf_file.exists() and compiled_pdf.exists():
             pdf_file = compiled_pdf
         
+        # プレビューの実行
+        if preview is None:
+            preview = self.config_manager.get("compilation.preview", False)
+        
+        if preview:
+            from ..utils.preview import get_previewer
+            previewer = get_previewer(self.config_manager.get("compilation.preview_type", "os"))
+            previewer.preview(str(pdf_file))
+
         # クリーンアップ
         cleanup = self.config_manager.get("file_management.cleanup", True)
         if cleanup:
