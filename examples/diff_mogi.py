@@ -8,8 +8,14 @@ PDFを生成する方法を示します。
 import sys
 from pathlib import Path
 
-# 親ディレクトリをパスに追加
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# プロジェクトルート（pdf_generator/ を含むディレクトリ）を自動検出
+_dir = Path(__file__).resolve().parent
+while _dir != _dir.parent:
+    if (_dir / "pdf_generator").is_dir():
+        sys.path.insert(0, str(_dir))
+        break
+    _dir = _dir.parent
+print(_dir)
 
 from pdf_generator.builder import DocumentBuilder
 from pdf_generator import PDFGenerator
@@ -31,26 +37,19 @@ def main():
     print("ドキュメントを構築しています...")
     doc = (
         DocumentBuilder()
-        # フォント設定（3つの方法があります）
-        # 方法1: CJKutf8を使用（シンプルだが不安定な場合がある）
-        # .set_font("goth")  # ゴシック体に設定（デフォルト: "min"=明朝体）
-        # 方法2: フォントファイルを直接指定（より安定、XeLaTeX/LuaLaTeXが必要）
-        # .set_font_file("C:/Windows/Fonts/msgothic.ttc", "MS Gothic")  # Windowsの場合
-        # .set_font_file("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")  # Linuxの場合
-        .set_font_file(
-            str(Path(__file__).parent.parent /
+        
+        ###ドキュメント全体の設定###
+        # 検出した_dirを使用してフォントファイルのパスを指定
+        .set_font_file(     
+            str(_dir /
                 "fonts" / "NotoSansJP-Regular.ttf"),
             "Noto Sans JP",
-        )  # ローカルファイル
-        # 方法3: URLからフォントファイルをダウンロード（推奨）
-        # .set_font_from_url(
-        #     "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.ttf",
-        #     "Noto Sans JP"
-        # )
+        )  
         .set_margins(top="2cm", bottom="2cm", left="2cm", right="2cm")  # 余白を設定
         .set_line_spacing(1.8)  # 行間を1.5倍に設定
-        # .set_abstract("このレポートでは、PythonとLaTeXの連携について説明します。")
-        # セクション2: 計算結果
+        
+        
+        ###要素の追加###
         .add_section("Theme: 微分積分とは？")
         # 導入
         .add_paragraph(

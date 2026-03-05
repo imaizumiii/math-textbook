@@ -8,8 +8,13 @@ PDFを生成する方法を示します。
 import sys
 from pathlib import Path
 
-# 親ディレクトリをパスに追加
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# プロジェクトルート（pdf_generator/ を含むディレクトリ）を自動検出
+_dir = Path(__file__).resolve().parent
+while _dir != _dir.parent:
+    if (_dir / "pdf_generator").is_dir():
+        sys.path.insert(0, str(_dir))
+        break
+    _dir = _dir.parent
 
 from pdf_generator import PDFGenerator
 from pdf_generator.builder import DocumentBuilder

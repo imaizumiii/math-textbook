@@ -22,5 +22,5 @@
     "python.analysis.typeCheckingMode": "basic",
     
     // スニペットの自動補完を無効化（全体設定）
-    "editor.snippetSuggestions": "none"
+    "editor.snippetSuggestions": "none",
 }

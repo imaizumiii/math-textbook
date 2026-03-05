@@ -1,8 +1,13 @@
 import sys
 from pathlib import Path
 
-# プロジェクトルートをパスに追加
-sys.path.append(str(Path(__file__).parent.parent))
+# プロジェクトルート（pdf_generator/ を含むディレクトリ）を自動検出
+_dir = Path(__file__).resolve().parent
+while _dir != _dir.parent:
+    if (_dir / "pdf_generator").is_dir():
+        sys.path.insert(0, str(_dir))
+        break
+    _dir = _dir.parent
 
 from pdf_generator.builder.document_builder import DocumentBuilder
 from pdf_generator.core.generator import PDFGenerator
