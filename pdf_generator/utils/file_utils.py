@@ -17,9 +17,6 @@ def check_command_exists(command: str) -> bool:
     Returns:
         bool: コマンドが存在する場合True
     """
-    import shutil
-    import platform
-    
     # shutil.whichを使用（クロスプラットフォーム）
     if shutil.which(command) is not None:
         return True
