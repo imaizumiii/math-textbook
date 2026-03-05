@@ -4,6 +4,7 @@ LaTeXプリアンブルを管理するクラス
 
 from typing import Dict, Optional, List
 from pathlib import Path
+from ..utils.font_utils import find_bold_font
 
 
 class PreambleManager:
@@ -101,66 +102,16 @@ class PreambleManager:
                 font_dir_quoted = font_dir
             
             # 太字フォントを自動検出
-            bold_font_filename = None
-            font_stem = font_path.stem
-            font_parent = font_path.parent
-            
-            # 一般的な太字フォント名のパターンをチェック
-            bold_patterns = [
-                font_stem.replace("Regular", "Bold"),
-                font_stem.replace("-Regular", "-Bold"),
-                font_stem.replace("_Regular", "_Bold"),
-                font_stem + "Bold",
-                font_stem + "-Bold",
-                font_stem + "_Bold",
-            ]
-            
-            # 既存のパターンから重複を除去
-            bold_patterns = list(dict.fromkeys(bold_patterns))
-            
-            # まず、フォントファイルと同じディレクトリ内を検索
-            for pattern in bold_patterns:
-                bold_font_path = font_parent / f"{pattern}{font_path.suffix}"
-                if bold_font_path.exists():
-                    bold_font_filename = bold_font_path.name
-                    break
-            
-            # 太字フォントが見つからない場合、同じディレクトリ内の他の太字フォントを検索
-            if bold_font_filename is None:
-                for bold_file in font_parent.glob("*Bold*.ttf"):
-                    if bold_file.exists():
-                        bold_font_filename = bold_file.name
-                        break
-                # Bold.otfも検索
-                if bold_font_filename is None:
-                    for bold_file in font_parent.glob("*Bold*.otf"):
-                        if bold_file.exists():
-                            bold_font_filename = bold_file.name
-                            break
-            
-            # 出力ディレクトリのfontsフォルダも確認（process_fontsでコピーされた後）
-            # font_dirが"fonts"の場合、出力ディレクトリのfontsフォルダを確認
-            if bold_font_filename is None and font_dir == "fonts":
-                # font_abs_pathから出力ディレクトリを推測
-                # font_abs_pathがoutput_dir/fonts/にある場合
+            # 出力ディレクトリのfontsフォルダも追加検索対象に含める
+            # （font_pathが相対パスの場合の防衛的対応: font_abs_path.parentで絶対パスを確保）
+            additional_dirs = []
+            if font_dir == "fonts":
                 output_fonts_dir = font_abs_path.parent
                 if output_fonts_dir.exists() and output_fonts_dir.name == "fonts":
-                    for pattern in bold_patterns:
-                        bold_font_path = output_fonts_dir / f"{pattern}{font_path.suffix}"
-                        if bold_font_path.exists():
-                            bold_font_filename = bold_font_path.name
-                            break
-                    
-                    if bold_font_filename is None:
-                        for bold_file in output_fonts_dir.glob("*Bold*.ttf"):
-                            if bold_file.exists():
-                                bold_font_filename = bold_file.name
-                                break
-                        if bold_font_filename is None:
-                            for bold_file in output_fonts_dir.glob("*Bold*.otf"):
-                                if bold_file.exists():
-                                    bold_font_filename = bold_file.name
-                                    break
+                    additional_dirs = [output_fonts_dir]
+
+            bold_font_result = find_bold_font(font_path, additional_search_dirs=additional_dirs or None)
+            bold_font_filename = bold_font_result.name if bold_font_result is not None else None
             
             latex.append("\n% フォント設定\n")
             # フォントファイルを設定（xeCJKを使用）

@@ -7,6 +7,7 @@ from pathlib import Path
 from ..elements.base import LaTeXElement
 from ..renderer.latex_renderer import LaTeXRenderer
 from ..renderer.preamble import PreambleManager
+from ..utils.font_utils import find_bold_font
 
 
 class Document:
@@ -94,45 +95,9 @@ class Document:
         shutil.copy2(font_path, dest_path)
         
         # 太字フォントを自動検出してコピー
-        font_stem = font_path.stem
-        font_parent = font_path.parent
-        
-        # 一般的な太字フォント名のパターンをチェック
-        bold_patterns = [
-            font_stem.replace("Regular", "Bold"),
-            font_stem.replace("-Regular", "-Bold"),
-            font_stem.replace("_Regular", "_Bold"),
-            font_stem + "Bold",
-            font_stem + "-Bold",
-            font_stem + "_Bold",
-        ]
-        
-        # 既存のパターンから重複を除去
-        bold_patterns = list(dict.fromkeys(bold_patterns))
-        
-        bold_font_copied = False
-        for pattern in bold_patterns:
-            bold_font_path = font_parent / f"{pattern}{font_path.suffix}"
-            if bold_font_path.exists():
-                bold_dest_path = fonts_dir / bold_font_path.name
-                shutil.copy2(bold_font_path, bold_dest_path)
-                bold_font_copied = True
-                break
-        
-        # 太字フォントが見つからない場合、同じディレクトリ内の他の太字フォントを検索
-        if not bold_font_copied:
-            for bold_file in font_parent.glob("*Bold*.ttf"):
-                if bold_file.exists():
-                    bold_dest_path = fonts_dir / bold_file.name
-                    shutil.copy2(bold_file, bold_dest_path)
-                    bold_font_copied = True
-                    break
-            if not bold_font_copied:
-                for bold_file in font_parent.glob("*Bold*.otf"):
-                    if bold_file.exists():
-                        bold_dest_path = fonts_dir / bold_file.name
-                        shutil.copy2(bold_file, bold_dest_path)
-                        break
+        bold_font_path = find_bold_font(font_path)
+        if bold_font_path is not None:
+            shutil.copy2(bold_font_path, fonts_dir / bold_font_path.name)
         
         # 相対パスを保存（LaTeXで使用するため）
         self.font_file = str(dest_path.absolute())
