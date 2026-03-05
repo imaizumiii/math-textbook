@@ -50,10 +50,30 @@ def main():
         .add_section("Thema: 一次不等式")
         .add_list(
             [
-                r"\textbf{方程式}：「＝」（等号）を使う式    - 例 \( 2x + 3 = 7 \) ",
-                r"\textbf{不等式}：「＜」や「＞」などの記号（不等号）を使う式    - 例 \( 2x + 3 > 7 \) ",
+                r"\textbf{方程式}：「＝」（等号）を使う式 --- 例 \( 2x + 3 = 7 \) ",
+                r"\textbf{不等式}：「＜」や「＞」などの記号（不等号）を使う式 --- 例 \( 2x + 3 > 7 \) ",
             ]
         )
+        .add_text("不等式は等式と同じように「移項」や「定数倍」などの操作ができます。")
+        .add_blank_space(height="1.2cm") 
+        # 移項と定数倍の例を手書きで追加
+        
+        .add_text("ただし、定数倍の操作では注意が必要です。")
+        .add_text("不等式の両辺を負の数で定数倍すると、不等号の向きが逆になります。")
+        .add_blank_space(height="1.2cm")
+        # 定数倍の例を手書きで追加
+        
+        .add_textbox(title="例27", content=r"不等式\( 2x - 7 < 5x -1 \)を解く。")
+        .add_text("解答")
+        .add_blank_space(height="2.4cm")
+        # 例27の解答を手書きで追加
+        
+        .add_exercise(title="練習42", content=r"次の１次不等式を解け。", items=[
+            r" \( 5x - 2 < 2x + 4 \)",
+            r" \( 6x - 3 \geqq 8x + 7 \)",
+            r" \( 2(4x-1) \geqq 5x -11 \)",
+            r" \( 3(3-2x) < 4-3x \)",
+        ], columns=2)
         .end_section()
         .build()
     )
