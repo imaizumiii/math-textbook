@@ -11,17 +11,51 @@ PythonとLaTeXを連携して、高品質な数学テキスト、問題集、レ
 - **柔軟なレイアウト**: `DrawingSpace`により解説と手書き用スペースを並列配置
 - **型安全**: `py.typed` マーカー付き、全APIに型ヒント付与済み
 
-## インストール
+## 環境設定
+
+### 1. 仮想環境の作成と有効化
 
 ```bash
+# 仮想環境を作成
+python -m venv .venv
+
+# 有効化（macOS / Linux）
+source .venv/bin/activate
+
+# 有効化（Windows）
+.venv\Scripts\activate
+```
+
+### 2. 依存パッケージのインストール
+
+```bash
+# 実行に必要なパッケージ
 pip install -r requirements.txt
+
+# 開発・テスト用パッケージ（テストを実行する場合）
+pip install -r requirements-dev.txt
 ```
 
 必要なパッケージ:
 - `jinja2>=3.0.0`
 - `jsonschema>=4.0.0`
+- （開発用）`pytest>=7.0`, `pytest-cov>=4.0`
 
-また、LaTeX環境（TeX LiveまたはMiKTeX）がインストールされ、PATHに追加されている必要があります。
+### 3. LaTeX 環境
+
+LaTeX環境（TeX LiveまたはMiKTeX）がインストールされ、PATHに追加されている必要があります。
+
+### 4. テストの実行
+
+```bash
+pytest
+```
+
+カバレッジレポートを出力する場合:
+
+```bash
+pytest --cov
+```
 
 ## ディレクトリ構造
 
