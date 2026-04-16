@@ -81,7 +81,11 @@ def main():
     # PDFを生成
     print("PDFを生成しています...")
     try:
-        pdf_path = generator.generate(doc, output_name=output_name)
+        pdf_path = generator.generate(
+            doc,
+            output_name=output_name,
+            output_dir=str(_dir / "output" / "docs" / "mathmatics-1"),
+        )
         print(f"成功: PDFが生成されました: {pdf_path}")
         return 0
     except FileNotFoundError as e:

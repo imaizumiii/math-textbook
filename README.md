@@ -167,6 +167,17 @@ pdf_path = generator.generate(
 print(pdf_path)
 ```
 
+`docs/mathmatics-1/linear-inequality.py` の場合:
+
+```python
+pdf_path = generator.generate(
+    doc,
+    output_name="linear-inequality.pdf",
+    output_dir=str(_dir / "output" / "docs" / "mathmatics-1"),
+)
+print(pdf_path)
+```
+
 ## DocumentBuilder API
 
 `DocumentBuilder` / `SectionBuilder` / `DrawingSpaceBuilder` の3クラスは `ContentAdderMixin` を継承しており、以下のコンテンツ追加メソッドを共有しています。
@@ -283,6 +294,9 @@ python examples/proofOfCLT.py
 
 # DrawingSpace + 画像配置のテスト
 python examples/test_drawing_space_image.py
+
+# 一次不等式の解説ページ（docs配下）を生成
+python docs/mathmatics-1/linear-inequality.py
 ```
 
 ## ライセンス
