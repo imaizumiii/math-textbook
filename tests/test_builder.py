@@ -59,6 +59,14 @@ class TestMethodChain:
         result = builder.add_blank_space("5cm")
         assert isinstance(result, DocumentBuilder)
 
+    def test_add_page_break_returns_builder(self, builder):
+        result = builder.add_page_break()
+        assert isinstance(result, DocumentBuilder)
+
+    def test_add_page_break_adds_page_break_element(self, builder):
+        builder.add_page_break(use_clearpage=True)
+        assert "\\clearpage" in builder.document.content[-1].to_latex()
+
     def test_add_divider_returns_builder(self, builder):
         result = builder.add_divider()
         assert isinstance(result, DocumentBuilder)

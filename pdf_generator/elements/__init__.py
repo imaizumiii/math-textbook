@@ -7,7 +7,7 @@ from .text import Text, Paragraph, List, Line, Divider
 from .math import Equation, Align
 from .graphics import Image, Figure
 from .boxes import TextBox, Note, Warning, Info
-from .structure import Section, Chapter, TableOfContents, DrawingSpace, Exercise, BlankSpace
+from .structure import Section, Chapter, TableOfContents, DrawingSpace, Exercise, BlankSpace, PageBreak
 from .tables import Table
 
 __all__ = [
@@ -31,6 +31,7 @@ __all__ = [
     'DrawingSpace',
     'Exercise',
     'BlankSpace',
+    'PageBreak',
     'Table',
 ]
 

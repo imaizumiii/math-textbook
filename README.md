@@ -218,6 +218,7 @@ print(pdf_path)
 | `.add_exercise(title, content, items, columns, line_spacing)` | 練習問題を追加（問題ブロック内だけ行間指定可） |
 | `.add_drawing_space(width, right_margin, margin_image)` | 手書きスペースを追加 → `DrawingSpaceBuilder` を返す |
 | `.add_blank_space(height)` | 空白スペースを追加 |
+| `.add_page_break(use_clearpage)` | 改ページを追加（既定: `\newpage`） |
 | `.add_line(text, line_style, color)` | 装飾線付きテキストを追加 |
 | `.add_divider(symbol, spacing)` | 区切り記号を追加 |
 

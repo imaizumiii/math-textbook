@@ -7,7 +7,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar
 
-from ..elements.structure import Exercise, BlankSpace, DrawingSpace
+from ..elements.structure import Exercise, BlankSpace, DrawingSpace, PageBreak
 from ..elements.graphics import Image, TikZ
 from ..elements.boxes import TextBox, Note, Warning, Info
 from ..elements.text import Text, Paragraph, List as ListElement, Divider
@@ -179,6 +179,16 @@ class ContentAdderMixin(ABC):
             height: 空白の高さ（例: "5cm", "50mm", "10em"）
         """
         self._container.add(BlankSpace(height))
+        return self
+
+    def add_page_break(self: _Self, use_clearpage: bool = False) -> _Self:
+        """
+        改ページを追加
+
+        Args:
+            use_clearpage: True の場合は \\clearpage（保留中のフロートも出力）を使用
+        """
+        self._container.add(PageBreak(use_clearpage=use_clearpage))
         return self
 
     def add_abstract(self: _Self, text: str, bold: bool = True,

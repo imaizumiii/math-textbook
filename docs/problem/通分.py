@@ -2,6 +2,7 @@
 通分の練習問題プリント
 """
 
+from pdb import line_prefix
 import sys
 from pathlib import Path
 
@@ -45,35 +46,179 @@ def main():
                 r" \( \dfrac{4}{9} \) + \( \dfrac{5}{6} \) ",
             ],
             columns=2,
+            line_spacing=3.0,
         )
-        .add_blank_space(height="0.4cm")
+        .add_blank_space(height="-0.4cm")
         .add_exercise(
-            title="基本問題",
-            content=r"次の2つの分数を通分し、同じ分母で表しなさい。",
+            title="問題2",
+            content=r"次の計算をしなさい。",
             items=[
-                r" \( \frac{5}{12} \) と \( \frac{7}{18} \) ",
-                r" \( \frac{3}{14} \) と \( \frac{2}{21} \) ",
-                r" \( \frac{11}{15} \) と \( \frac{4}{9} \) ",
-                r" \( \frac{5}{16} \) と \( \frac{3}{20} \) ",
-                r" \( \frac{7}{24} \) と \( \frac{5}{36} \) ",
-                r" \( \frac{13}{18} \) と \( \frac{2}{27} \) ",
-                r" \( \frac{5}{22} \) と \( \frac{9}{33} \) ",
-                r" \( \frac{4}{25} \) と \( \frac{7}{30} \) ",
+                r" \( \dfrac{5}{12} \) + \( \dfrac{7}{18} \) ",
+                r" \( \dfrac{3}{14} \) + \( \dfrac{2}{21} \) ",
+                r" \( \dfrac{11}{15} \) + \( \dfrac{4}{9} \) ",
+                r" \( \dfrac{5}{16} \) + \( \dfrac{3}{20} \) ",
+                r" \( \dfrac{7}{24} \) + \( \dfrac{5}{36} \) ",
+                r" \( \dfrac{13}{18} \) + \( \dfrac{2}{27} \) ",
+                r" \( \dfrac{5}{22} \) + \( \dfrac{9}{33} \) ",
+                r" \( \dfrac{4}{25} \) + \( \dfrac{7}{30} \) ",
             ],
+            line_spacing=3.0,
             columns=2,
         )
-        .add_blank_space(height="0.4cm")
+        .add_blank_space(height="-0.4cm")
         .add_exercise(
-            title="発展問題",
-            content=r"次の3つの分数を通分しなさい。",
+            title="問題3",
+            content=r"次の計算をしなさい。",
             items=[
-                r" \( \frac{1}{2},\ \frac{1}{3},\ \frac{1}{4} \) ",
-                r" \( \frac{2}{5},\ \frac{1}{6},\ \frac{3}{10} \) ",
-                r" \( \frac{3}{8},\ \frac{5}{12},\ \frac{7}{18} \) ",
-                r" \( \frac{4}{9},\ \frac{5}{12},\ \frac{1}{18} \) ",
-                r" \( \frac{7}{15},\ \frac{11}{20},\ \frac{13}{30} \) ",
-                r" \( \frac{3}{14},\ \frac{5}{21},\ \frac{4}{6} \) ",
+                r" \( \dfrac{1}{2} \) + \( \dfrac{1}{3} \) + \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{2}{5} \) + \( \dfrac{1}{6} \) + \( \dfrac{3}{10} \) ",
+                r" \( \dfrac{3}{8} \) + \( \dfrac{5}{12} \) + \( \dfrac{7}{18} \) ",
+                r" \( \dfrac{4}{9} \) + \( \dfrac{5}{12} \) + \( \dfrac{1}{18} \) ",
+                r" \( \dfrac{7}{15} \) + \( \dfrac{11}{20} \) + \( \dfrac{13}{30} \) ",
+                r" \( \dfrac{3}{14} \) + \( \dfrac{5}{21} \) + \( \dfrac{4}{6} \) ",
             ],
+            line_spacing=3.0,
+            columns=1,
+        )
+        .add_page_break()
+        .add_exercise(
+            title="問題4",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{5}{6} \) - \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{7}{10} \) - \( \dfrac{2}{5} \) ",
+                r" \( \dfrac{11}{12} \) - \( \dfrac{1}{3} \) ",
+                r" \( \dfrac{9}{14} \) - \( \dfrac{3}{7} \) ",
+                r" \( \dfrac{13}{15} \) - \( \dfrac{2}{9} \) ",
+                r" \( \dfrac{17}{18} \) - \( \dfrac{5}{12} \) ",
+            ],
+            columns=2,
+            line_spacing=3.0,
+        )
+        .add_blank_space(height="-0.4cm")
+        .add_exercise(
+            title="問題5",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{3}{8} \) + \( \dfrac{5}{12} \) - \( \dfrac{1}{6} \) ",
+                r" \( \dfrac{7}{9} \) - \( \dfrac{1}{6} \) + \( \dfrac{2}{3} \) ",
+                r" \( \dfrac{5}{14} \) + \( \dfrac{3}{7} \) - \( \dfrac{1}{2} \) ",
+                r" \( \dfrac{11}{20} \) - \( \dfrac{3}{10} \) + \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{7}{18} \) + \( \dfrac{5}{12} \) - \( \dfrac{1}{9} \) ",
+                r" \( \dfrac{13}{24} \) - \( \dfrac{1}{8} \) + \( \dfrac{5}{6} \) ",
+                r" \( \dfrac{9}{16} \) + \( \dfrac{7}{20} \) - \( \dfrac{3}{10} \) ",
+                r" \( \dfrac{4}{15} \) - \( \dfrac{1}{10} \) + \( \dfrac{2}{3} \) ",
+            ],
+            line_spacing=3.0,
+            columns=2,
+        )
+        .add_blank_space(height="-0.4cm")
+        .add_exercise(
+            title="問題6",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{1}{3} \) + \( \dfrac{1}{4} \) + \( \dfrac{1}{6} \) ",
+                r" \( \dfrac{5}{8} \) - \( \dfrac{1}{6} \) - \( \dfrac{1}{12} \) ",
+                r" \( \dfrac{7}{10} \) + \( \dfrac{3}{5} \) - \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{11}{15} \) - \( \dfrac{2}{9} \) + \( \dfrac{1}{6} \) ",
+                r" \( \dfrac{13}{18} \) + \( \dfrac{5}{12} \) - \( \dfrac{7}{24} \) ",
+                r" \( \dfrac{4}{7} \) - \( \dfrac{3}{14} \) + \( \dfrac{5}{21} \) ",
+            ],
+            line_spacing=3.0,
+            columns=1,
+        )
+        .add_page_break()
+        .add_exercise(
+            title="問題7",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{5}{9} \) + \( \dfrac{7}{12} \) ",
+                r" \( \dfrac{11}{18} \) + \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{3}{10} \) + \( \dfrac{5}{6} \) ",
+                r" \( \dfrac{7}{16} \) + \( \dfrac{3}{8} \) ",
+                r" \( \dfrac{13}{20} \) + \( \dfrac{2}{15} \) ",
+                r" \( \dfrac{17}{24} \) + \( \dfrac{5}{18} \) ",
+            ],
+            columns=2,
+            line_spacing=3.0,
+        )
+        .add_blank_space(height="-0.4cm")
+        .add_exercise(
+            title="問題8",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{7}{12} \) - \( \dfrac{1}{8} \) ",
+                r" \( \dfrac{9}{14} \) - \( \dfrac{2}{7} \) ",
+                r" \( \dfrac{11}{15} \) - \( \dfrac{1}{6} \) ",
+                r" \( \dfrac{5}{18} \) - \( \dfrac{1}{9} \) ",
+                r" \( \dfrac{13}{16} \) - \( \dfrac{3}{10} \) ",
+                r" \( \dfrac{19}{20} \) - \( \dfrac{7}{12} \) ",
+                r" \( \dfrac{5}{21} \) - \( \dfrac{1}{14} \) ",
+                r" \( \dfrac{17}{30} \) - \( \dfrac{2}{9} \) ",
+            ],
+            line_spacing=3.0,
+            columns=2,
+        )
+        .add_blank_space(height="-0.4cm")
+        .add_exercise(
+            title="問題9",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{1}{2} \) + \( \dfrac{2}{3} \) - \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{3}{5} \) + \( \dfrac{1}{6} \) - \( \dfrac{1}{10} \) ",
+                r" \( \dfrac{7}{8} \) - \( \dfrac{1}{3} \) + \( \dfrac{1}{12} \) ",
+                r" \( \dfrac{11}{12} \) + \( \dfrac{1}{4} \) - \( \dfrac{1}{6} \) ",
+                r" \( \dfrac{5}{14} \) + \( \dfrac{2}{7} \) - \( \dfrac{1}{3} \) ",
+                r" \( \dfrac{13}{18} \) - \( \dfrac{1}{9} \) + \( \dfrac{5}{12} \) ",
+            ],
+            line_spacing=3.0,
+            columns=1,
+        )
+        .add_page_break()
+        .add_exercise(
+            title="問題10",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{4}{9} \) + \( \dfrac{5}{18} \) ",
+                r" \( \dfrac{7}{15} \) + \( \dfrac{11}{30} \) ",
+                r" \( \dfrac{3}{14} \) + \( \dfrac{5}{21} \) ",
+                r" \( \dfrac{9}{20} \) + \( \dfrac{7}{25} \) ",
+                r" \( \dfrac{13}{24} \) + \( \dfrac{1}{8} \) ",
+                r" \( \dfrac{17}{28} \) + \( \dfrac{3}{7} \) ",
+            ],
+            columns=2,
+            line_spacing=3.0,
+        )
+        .add_blank_space(height="-0.4cm")
+        .add_exercise(
+            title="問題11",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{5}{12} \) + \( \dfrac{1}{3} \) - \( \dfrac{1}{8} \) ",
+                r" \( \dfrac{7}{10} \) - \( \dfrac{1}{4} \) + \( \dfrac{2}{5} \) ",
+                r" \( \dfrac{11}{18} \) + \( \dfrac{1}{6} \) - \( \dfrac{1}{9} \) ",
+                r" \( \dfrac{13}{20} \) - \( \dfrac{3}{10} \) + \( \dfrac{1}{5} \) ",
+                r" \( \dfrac{17}{24} \) + \( \dfrac{1}{12} \) - \( \dfrac{5}{18} \) ",
+                r" \( \dfrac{19}{30} \) - \( \dfrac{1}{6} \) + \( \dfrac{2}{15} \) ",
+                r" \( \dfrac{5}{16} \) + \( \dfrac{3}{8} \) - \( \dfrac{1}{4} \) ",
+                r" \( \dfrac{7}{22} \) + \( \dfrac{9}{33} \) - \( \dfrac{2}{11} \) ",
+            ],
+            line_spacing=3.0,
+            columns=2,
+        )
+        .add_blank_space(height="-0.4cm")
+        .add_exercise(
+            title="問題12",
+            content=r"次の計算をしなさい。",
+            items=[
+                r" \( \dfrac{1}{3} \) + \( \dfrac{1}{4} \) + \( \dfrac{1}{5} \) ",
+                r" \( \dfrac{2}{7} \) + \( \dfrac{3}{14} \) + \( \dfrac{1}{2} \) ",
+                r" \( \dfrac{5}{12} \) + \( \dfrac{7}{18} \) - \( \dfrac{1}{6} \) ",
+                r" \( \dfrac{11}{20} \) - \( \dfrac{1}{4} \) + \( \dfrac{3}{10} \) ",
+                r" \( \dfrac{13}{30} \) + \( \dfrac{1}{6} \) + \( \dfrac{2}{5} \) ",
+                r" \( \dfrac{17}{24} \) - \( \dfrac{1}{3} \) + \( \dfrac{5}{12} \) ",
+            ],
+            line_spacing=3.0,
             columns=1,
         )
         .end_section()

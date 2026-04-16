@@ -4,7 +4,7 @@
 
 import pytest
 from pdf_generator.elements.structure import (
-    Section, Chapter, TableOfContents, DrawingSpace, Exercise, BlankSpace
+    Section, Chapter, TableOfContents, DrawingSpace, Exercise, BlankSpace, PageBreak
 )
 
 
@@ -97,3 +97,13 @@ class TestBlankSpace:
         latex = BlankSpace("3em").to_latex()
         assert "\\vspace" in latex
         assert "3em" in latex
+
+
+class TestPageBreak:
+    def test_page_break_uses_newpage_by_default(self):
+        latex = PageBreak().to_latex()
+        assert "\\newpage" in latex
+
+    def test_page_break_can_use_clearpage(self):
+        latex = PageBreak(use_clearpage=True).to_latex()
+        assert "\\clearpage" in latex

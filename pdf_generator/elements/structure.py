@@ -29,6 +29,25 @@ class BlankSpace(LaTeXElement):
         return f"\\vspace{{{self.height}}}\n"
 
 
+class PageBreak(LaTeXElement):
+    """
+    改ページ要素
+
+    デフォルトでは \\newpage を使い、必要に応じて \\clearpage に切り替えられます。
+    """
+
+    def __init__(self, use_clearpage: bool = False):
+        """
+        Args:
+            use_clearpage: True の場合は \\clearpage を使用
+        """
+        super().__init__()
+        self.use_clearpage = use_clearpage
+
+    def to_latex(self) -> str:
+        return "\\clearpage\n" if self.use_clearpage else "\\newpage\n"
+
+
 class Section(LaTeXElement):
     """セクション要素"""
     
