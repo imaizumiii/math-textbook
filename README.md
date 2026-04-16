@@ -151,6 +151,22 @@ if __name__ == "__main__":
     main()
 ```
 
+### スクリプトごとに出力先を分ける
+
+`generate()` の `output_dir` 引数を使うと、設定ファイルとは別に、その呼び出しだけ出力先を変更できます。
+
+```python
+from pathlib import Path
+
+script_name = Path(__file__).stem
+pdf_path = generator.generate(
+    doc,
+    output_name=f"{script_name}.pdf",
+    output_dir=f"output/{script_name}",
+)
+print(pdf_path)
+```
+
 ## DocumentBuilder API
 
 `DocumentBuilder` / `SectionBuilder` / `DrawingSpaceBuilder` の3クラスは `ContentAdderMixin` を継承しており、以下のコンテンツ追加メソッドを共有しています。
@@ -229,6 +245,7 @@ except CompilationError as e:
 ## 設定ファイル (`config/default.json`)
 
 出力ディレクトリやLaTeXエンジンの設定を行えます。
+`directories.output_dir` は `generate(..., output_dir=...)` を指定しない場合のデフォルト値です。
 
 ```json
 {

@@ -40,7 +40,13 @@ class PDFGenerator:
         if temp_dir:
             Path(temp_dir).mkdir(parents=True, exist_ok=True)
     
-    def generate(self, document: Document, output_name: Optional[str] = None, preview: Optional[bool] = None) -> str:
+    def generate(
+        self,
+        document: Document,
+        output_name: Optional[str] = None,
+        preview: Optional[bool] = None,
+        output_dir: Optional[str] = None
+    ) -> str:
         """
         DocumentからPDFを生成
         
@@ -48,6 +54,7 @@ class PDFGenerator:
             document: Documentインスタンス
             output_name: 出力ファイル名（省略時は自動生成）
             preview: 生成後にプレビューを表示するかどうか（Noneの場合は設定ファイルに従う）
+            output_dir: 出力ディレクトリ（指定時は設定ファイルより優先）
         
         Returns:
             生成されたPDFファイルのパス
@@ -55,7 +62,10 @@ class PDFGenerator:
         Raises:
             RuntimeError: コンパイルエラー時
         """
-        output_dir = Path(self.config_manager.get("directories.output_dir", "output"))
+        output_dir = Path(
+            output_dir if output_dir is not None
+            else self.config_manager.get("directories.output_dir", "output")
+        )
         temp_dir = Path(self.config_manager.get("directories.temp_dir", output_dir))
         
         # 画像の処理
@@ -107,7 +117,7 @@ class PDFGenerator:
                 )
         
         # PDFをコンパイル
-        success, error_msg = self.compiler.compile(str(temp_tex_file), output_dir)
+        success, error_msg = self.compiler.compile(str(temp_tex_file), str(output_dir))
         
         # エンジンを元に戻す
         self.compiler.engine = original_engine
@@ -156,7 +166,7 @@ class PDFGenerator:
                 if '.log' not in extensions_to_remove:
                     extensions_to_remove.append('.log')
             
-            self.compiler.cleanup(str(temp_tex_file), extensions_to_remove, output_dir)
+            self.compiler.cleanup(str(temp_tex_file), extensions_to_remove, str(output_dir))
         
         return str(pdf_file)
 
