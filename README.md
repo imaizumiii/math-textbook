@@ -215,7 +215,7 @@ print(pdf_path)
 | `.add_tikz(code, caption, libraries, inline)` | TikZ図形を追加 |
 | `.add_list(items, ordered)` | 箇条書きリストを追加 |
 | `.add_table(headers, rows, caption)` | テーブルを追加 |
-| `.add_exercise(title, content, items, columns)` | 練習問題を追加 |
+| `.add_exercise(title, content, items, columns, line_spacing)` | 練習問題を追加（問題ブロック内だけ行間指定可） |
 | `.add_drawing_space(width, right_margin, margin_image)` | 手書きスペースを追加 → `DrawingSpaceBuilder` を返す |
 | `.add_blank_space(height)` | 空白スペースを追加 |
 | `.add_line(text, line_style, color)` | 装飾線付きテキストを追加 |

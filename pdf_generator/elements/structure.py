@@ -161,19 +161,24 @@ class Exercise(LaTeXElement):
     タイトルと問題の本文を持つ小問を表現します。
     """
     
-    def __init__(self, title: str, content: str, items: Optional[List[str]] = None, columns: int = 1):
+    def __init__(self, title: str, content: str, items: Optional[List[str]] = None,
+                 columns: int = 1, line_spacing: Optional[float] = None):
         """
         Args:
             title: 小問のタイトル（例: "練習4"）
             content: 問題の本文
             items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
             columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
+            line_spacing: この練習問題ブロック内だけに適用する行間倍率（例: 1.2）
         """
         super().__init__()
+        if line_spacing is not None and line_spacing <= 0:
+            raise ValueError("line_spacing は0より大きい値である必要があります")
         self.title = title
         self.content = content
         self.items = items or []
         self.columns = columns
+        self.line_spacing = line_spacing
     
     def to_latex(self) -> str:
         # タイトルと本文をエスケープ
@@ -181,9 +186,11 @@ class Exercise(LaTeXElement):
         # 修正: 本文（content）は数式を含むためエスケープしない
         content = self.content
         
-        # タイトルを太字で表示し、間隔をあけて問題の本文を配置（横並び）
         result = "\\noindent\n"
-        # 修正: escaped_content ではなく content を使用
+        if self.line_spacing is not None:
+            result += f"\\begin{{spacing}}{{{self.line_spacing}}}\n"
+
+        # タイトルを太字で表示し、間隔をあけて問題の本文を配置（横並び）
         result += f"\\textbf{{{escaped_title}}}\\quad {content}\n"
         
         # 小問リストがある場合
@@ -205,7 +212,10 @@ class Exercise(LaTeXElement):
             
             if self.columns > 1:
                 result += "\\end{multicols}\n"
-            
+
+        if self.line_spacing is not None:
+            result += "\\end{spacing}\n"
+
         result += "\\par\n"
         result += "\\vspace{0.5em}\n"  # 適切な間隔を確保
         

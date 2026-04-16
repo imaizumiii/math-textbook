@@ -228,7 +228,8 @@ class ContentAdderMixin(ABC):
         return DrawingSpaceBuilder(self._doc_builder, drawing_space, parent_builder=self)
 
     def add_exercise(self: _Self, title: str, content: str,
-                     items: Optional[List[str]] = None, columns: int = 1) -> _Self:
+                     items: Optional[List[str]] = None, columns: int = 1,
+                     line_spacing: Optional[float] = None) -> _Self:
         """
         小問（練習問題）を追加
 
@@ -237,14 +238,25 @@ class ContentAdderMixin(ABC):
             content: 問題の本文
             items: 小問のリスト（例: ["$f(x) = x^2$", "$f(x) = 3x + 1$"]）
             columns: 列数（1: 縦並び, 2以上: 横並び（段組み））
+            line_spacing: この練習問題ブロック内だけに適用する行間倍率（例: 1.2）
 
         Returns:
             self（メソッドチェーン用）
 
         Example:
-            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2)
+            .add_exercise("練習4", "次の関数を微分せよ。", items=["$f(x) = x^2$", "$f(x) = 3x + 1$"], columns=2, line_spacing=1.2)
         """
         if columns > 1:
             self._doc_builder.add_package("multicol")
-        self._container.add(Exercise(title=title, content=content, items=items, columns=columns))
+        if line_spacing is not None:
+            self._doc_builder.add_package("setspace")
+        self._container.add(
+            Exercise(
+                title=title,
+                content=content,
+                items=items,
+                columns=columns,
+                line_spacing=line_spacing
+            )
+        )
         return self

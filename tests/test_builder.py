@@ -79,6 +79,11 @@ class TestMethodChain:
         result = builder.add_exercise("問1", "求めよ")
         assert isinstance(result, DocumentBuilder)
 
+    def test_add_exercise_with_line_spacing_adds_setspace_package(self, builder):
+        builder.add_exercise("問1", "求めよ", line_spacing=1.2)
+        assert "setspace" in builder.document.preamble_manager.packages
+        assert builder.document.content[-1].line_spacing == 1.2
+
     def test_add_table_returns_builder(self, builder):
         result = builder.add_table(["A", "B"], [["1", "2"]])
         assert isinstance(result, DocumentBuilder)

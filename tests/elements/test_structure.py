@@ -78,6 +78,15 @@ class TestExercise:
         latex = Exercise("問1", "内容").to_latex()
         assert "\\textbf" in latex
 
+    def test_exercise_with_line_spacing(self):
+        latex = Exercise("問1", "求めよ", line_spacing=1.3).to_latex()
+        assert "\\begin{spacing}{1.3}" in latex
+        assert "\\end{spacing}" in latex
+
+    def test_exercise_invalid_line_spacing(self):
+        with pytest.raises(ValueError):
+            Exercise("問1", "内容", line_spacing=0)
+
 
 class TestBlankSpace:
     def test_blank_space(self):
